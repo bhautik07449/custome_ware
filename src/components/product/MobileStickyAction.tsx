@@ -1,3 +1,4 @@
+import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 
 export default function MobileStickyAction() {
@@ -7,7 +8,7 @@ export default function MobileStickyAction() {
         <button aria-label="Add to Wishlist" className="w-14 h-14 flex items-center justify-center border border-outline-variant rounded-xl active:scale-95 transition-transform bg-surface">
           <span className="material-symbols-outlined text-on-surface">favorite</span>
         </button>
-        <Link to="/designer" className="flex-1 bg-primary text-on-primary font-label-md text-label-md py-md flex items-center justify-center rounded-xl shadow-lg active:scale-[0.98] transition-all hover:bg-secondary">
+        <Link to={PATHS.DESIGNER} className="flex-1 bg-primary text-on-primary font-label-md text-label-md py-md flex items-center justify-center rounded-xl shadow-lg active:scale-[0.98] transition-all hover:bg-secondary">
           Customize Now
         </Link>
       </div>

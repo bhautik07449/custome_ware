@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { PATHS } from '../../utils/routes';
 import { PRODUCTS } from '../../data/mockData';
 
 export default function FeaturedProducts() {
@@ -12,7 +13,7 @@ export default function FeaturedProducts() {
               <span className="text-secondary font-label-md uppercase tracking-widest">Community Picks</span>
               <h2 className="font-headline-lg text-headline-lg mt-base">Trending Designs</h2>
             </div>
-            <Link className="text-secondary font-label-md hover:underline flex items-center gap-xs" to="/shop">
+            <Link className="text-secondary font-label-md hover:underline flex items-center gap-xs" to={PATHS.SHOP}>
               View All Designs <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </Link>
           </div>
@@ -24,7 +25,7 @@ export default function FeaturedProducts() {
                   <div className="absolute top-md right-md bg-surface px-sm py-xs rounded-full text-label-sm font-bold shadow-sm">
                     ${product.price.toFixed(2)}
                   </div>
-                  <Link to="/designer" className="absolute bottom-md left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 transition-all duration-300 bg-primary text-on-primary px-xl py-sm rounded-full font-label-md opacity-0 group-hover:opacity-100 flex items-center gap-sm whitespace-nowrap">
+                  <Link to={PATHS.DESIGNER} className="absolute bottom-md left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 transition-all duration-300 bg-primary text-on-primary px-xl py-sm rounded-full font-label-md opacity-0 group-hover:opacity-100 flex items-center gap-sm whitespace-nowrap">
                     <span className="material-symbols-outlined text-[18px]">edit</span> Customize
                   </Link>
                 </div>
@@ -40,7 +41,7 @@ export default function FeaturedProducts() {
       <section className="py-xl md:hidden">
         <div className="px-md flex justify-between items-center mb-md">
           <h2 className="font-headline-md text-headline-md">Trending Now</h2>
-          <Link to="/shop" className="text-secondary font-label-md text-label-md">View all</Link>
+          <Link to={PATHS.SHOP} className="text-secondary font-label-md text-label-md">View all</Link>
         </div>
         <div className="flex gap-md overflow-x-auto px-md pb-md snap-x hide-scrollbar">
           {PRODUCTS.slice(0, 4).map(product => (

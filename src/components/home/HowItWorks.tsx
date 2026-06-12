@@ -1,3 +1,4 @@
+import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 
 export default function HowItWorks() {
@@ -44,7 +45,7 @@ export default function HowItWorks() {
             </div>
           </div>
           <div className="mt-3xl text-center">
-            <Link to="/designer" className="inline-block bg-secondary text-on-primary px-3xl py-md rounded-full font-label-md text-label-md hover:brightness-110 transition-all">
+            <Link to={PATHS.DESIGNER} className="inline-block bg-secondary text-on-primary px-3xl py-md rounded-full font-label-md text-label-md hover:brightness-110 transition-all">
               Experience the Studio
             </Link>
           </div>

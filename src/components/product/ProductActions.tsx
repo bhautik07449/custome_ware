@@ -1,3 +1,4 @@
+import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 
 export default function ProductActions() {
@@ -8,7 +9,7 @@ export default function ProductActions() {
         Add to Cart
       </button>
       <Link
-        to="/designer"
+        to={PATHS.DESIGNER}
         className="border-2 border-primary text-primary py-lg rounded-xl font-label-md text-label-md flex items-center justify-center gap-md hover:bg-surface-container-low transition-all active:scale-[0.98]"
       >
         <span className="material-symbols-outlined">auto_fix_high</span>

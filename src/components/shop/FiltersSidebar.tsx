@@ -11,15 +11,27 @@ export default function FiltersSidebar() {
           <h4 className="text-label-md font-bold mb-md uppercase tracking-wider text-on-surface-variant">Category</h4>
           <div className="space-y-sm">
             <label className="flex items-center gap-3 cursor-pointer group">
-              <input defaultChecked className="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox" />
+              <div className="relative flex items-center justify-center w-5 h-5">
+                <input type="checkbox" defaultChecked className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
+                <div className="absolute inset-0 rounded border-2 border-outline-variant peer-checked:border-secondary peer-checked:bg-secondary transition-all pointer-events-none z-0"></div>
+                <span className="material-symbols-outlined text-[14px] text-white font-bold opacity-0 peer-checked:opacity-100 transition-all scale-50 peer-checked:scale-100 pointer-events-none z-10">check</span>
+              </div>
               <span className="text-body-md text-on-surface group-hover:text-secondary transition-colors">Premium Cotton</span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer group">
-              <input className="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox" />
+              <div className="relative flex items-center justify-center w-5 h-5">
+                <input type="checkbox" className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
+                <div className="absolute inset-0 rounded border-2 border-outline-variant peer-checked:border-secondary peer-checked:bg-secondary transition-all pointer-events-none z-0"></div>
+                <span className="material-symbols-outlined text-[14px] text-white font-bold opacity-0 peer-checked:opacity-100 transition-all scale-50 peer-checked:scale-100 pointer-events-none z-10">check</span>
+              </div>
               <span className="text-body-md text-on-surface group-hover:text-secondary transition-colors">Organic Series</span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer group">
-              <input className="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox" />
+              <div className="relative flex items-center justify-center w-5 h-5">
+                <input type="checkbox" className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
+                <div className="absolute inset-0 rounded border-2 border-outline-variant peer-checked:border-secondary peer-checked:bg-secondary transition-all pointer-events-none z-0"></div>
+                <span className="material-symbols-outlined text-[14px] text-white font-bold opacity-0 peer-checked:opacity-100 transition-all scale-50 peer-checked:scale-100 pointer-events-none z-10">check</span>
+              </div>
               <span className="text-body-md text-on-surface group-hover:text-secondary transition-colors">Heavyweight Tech</span>
             </label>
           </div>
@@ -53,11 +65,19 @@ export default function FiltersSidebar() {
           <h4 className="text-label-md font-bold mb-md uppercase tracking-wider text-on-surface-variant">Material</h4>
           <div className="space-y-sm">
             <label className="flex items-center gap-3 cursor-pointer group">
-              <input className="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox" />
+              <div className="relative flex items-center justify-center w-5 h-5">
+                <input type="checkbox" className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
+                <div className="absolute inset-0 rounded border-2 border-outline-variant peer-checked:border-secondary peer-checked:bg-secondary transition-all pointer-events-none z-0"></div>
+                <span className="material-symbols-outlined text-[14px] text-white font-bold opacity-0 peer-checked:opacity-100 transition-all scale-50 peer-checked:scale-100 pointer-events-none z-10">check</span>
+              </div>
               <span className="text-body-md text-on-surface group-hover:text-secondary transition-colors">Supima Cotton</span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer group">
-              <input className="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox" />
+              <div className="relative flex items-center justify-center w-5 h-5">
+                <input type="checkbox" className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
+                <div className="absolute inset-0 rounded border-2 border-outline-variant peer-checked:border-secondary peer-checked:bg-secondary transition-all pointer-events-none z-0"></div>
+                <span className="material-symbols-outlined text-[14px] text-white font-bold opacity-0 peer-checked:opacity-100 transition-all scale-50 peer-checked:scale-100 pointer-events-none z-10">check</span>
+              </div>
               <span className="text-body-md text-on-surface group-hover:text-secondary transition-colors">Bamboo Blend</span>
             </label>
           </div>

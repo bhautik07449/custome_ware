@@ -1,3 +1,4 @@
+import { getProductLink } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 
 export default function RelatedProducts() {
@@ -6,7 +7,7 @@ export default function RelatedProducts() {
       <h2 className="font-headline-md text-headline-md mb-2xl">Complete the Look</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-lg">
         {/* Related Product 1 */}
-        <Link to="/product/raw-edge-slim-jeans" className="group flex flex-col gap-md">
+        <Link to={getProductLink('raw-edge-slim-jeans')} className="group flex flex-col gap-md">
           <div className="relative aspect-[3/4] rounded-xl bg-surface-container-low overflow-hidden border border-outline-variant/20">
             <img
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -24,7 +25,7 @@ export default function RelatedProducts() {
         </Link>
 
         {/* Related Product 2 */}
-        <Link to="/product/essential-bomber-jacket" className="group flex flex-col gap-md">
+        <Link to={getProductLink('essential-bomber-jacket')} className="group flex flex-col gap-md">
           <div className="relative aspect-[3/4] rounded-xl bg-surface-container-low overflow-hidden border border-outline-variant/20">
             <img
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -42,7 +43,7 @@ export default function RelatedProducts() {
         </Link>
 
         {/* Related Product 3 */}
-        <Link to="/product/minimalist-field-watch" className="group flex flex-col gap-md">
+        <Link to={getProductLink('minimalist-field-watch')} className="group flex flex-col gap-md">
           <div className="relative aspect-[3/4] rounded-xl bg-surface-container-low overflow-hidden border border-outline-variant/20">
             <img
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -60,7 +61,7 @@ export default function RelatedProducts() {
         </Link>
 
         {/* Related Product 4 */}
-        <Link to="/product/studio-leather-sneakers" className="group flex flex-col gap-md">
+        <Link to={getProductLink('studio-leather-sneakers')} className="group flex flex-col gap-md">
           <div className="relative aspect-[3/4] rounded-xl bg-surface-container-low overflow-hidden border border-outline-variant/20">
             <img
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

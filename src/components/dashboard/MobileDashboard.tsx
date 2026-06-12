@@ -1,3 +1,4 @@
+import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 import { ORDERS, SAVED_DESIGNS } from '../../data/mockData';
 
@@ -80,7 +81,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
           <div className="space-y-md fade-in">
             <div className="flex justify-between items-center mb-sm">
               <h3 className="font-label-md text-label-md text-on-surface uppercase tracking-wider">Your Creations</h3>
-              <Link to="/designer" className="text-secondary font-label-sm">+ New Design</Link>
+              <Link to={PATHS.DESIGNER} className="text-secondary font-label-sm">+ New Design</Link>
             </div>
             <div className="grid grid-cols-1 gap-md">
               {SAVED_DESIGNS.map(design => (
@@ -97,7 +98,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
                     <h4 className="font-label-md text-label-md text-on-surface">{design.name}</h4>
                     <p className="font-label-sm text-label-sm text-on-surface-variant mb-md">{design.lastEdited}</p>
                     <div className="flex gap-sm">
-                      <Link to="/designer" className="flex-1 bg-primary text-on-primary py-sm rounded-lg font-label-md active:scale-95 transition-all text-center">Edit Design</Link>
+                      <Link to={PATHS.DESIGNER} className="flex-1 bg-primary text-on-primary py-sm rounded-lg font-label-md active:scale-95 transition-all text-center">Edit Design</Link>
                       <button className="w-12 border border-outline-variant rounded-lg flex items-center justify-center hover:bg-surface-container active:scale-95 transition-all">
                         <span className="material-symbols-outlined">share</span>
                       </button>

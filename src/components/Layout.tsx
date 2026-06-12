@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 import Header from './layout/Header';
 import MobileNav from './layout/MobileNav';
 import Footer from './layout/Footer';
+import { PATHS } from '../utils/routes';
 
 export default function Layout() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
-  const isNoShell = location.pathname === '/designer' || location.pathname === '/cart';
-  const isDashboard = location.pathname.startsWith('/dashboard');
+  const isNoShell = location.pathname === PATHS.DESIGNER || location.pathname === PATHS.CART;
+  const isDashboard = location.pathname.startsWith(PATHS.DASHBOARD);
 
   useEffect(() => {
     const handleScroll = () => {

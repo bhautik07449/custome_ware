@@ -53,7 +53,7 @@ export default function DesignerCanvas() {
 
   return (
     <>
-    <section className="flex-1 canvas-bg-pattern relative hidden md:flex flex-col items-center justify-center p-2xl w-full overflow-auto touch-pan-x touch-pan-y">
+    <section className="flex-1 canvas-bg-pattern relative hidden md:flex flex-col items-center justify-center p-2xl w-full overflow-auto hide-scrollbar touch-pan-x touch-pan-y">
       {/* Canvas Controls */}
       <div className="absolute top-md left-md flex flex-col gap-sm z-10">
         <button className="bg-surface-container-lowest shadow-sm border border-outline-variant p-sm rounded-lg hover:bg-surface-container transition-colors">
@@ -140,7 +140,7 @@ export default function DesignerCanvas() {
     {/* ------------------------------------------------------------- */}
     {/* MOBILE Center Canvas                                          */}
     {/* ------------------------------------------------------------- */}
-    <section className="flex-1 canvas-bg-pattern relative md:hidden flex flex-col items-center justify-center p-md overflow-auto w-full touch-pan-x touch-pan-y">
+    <section className="flex-1 canvas-bg-pattern relative md:hidden flex flex-col items-center justify-center p-md overflow-auto hide-scrollbar w-full touch-pan-x touch-pan-y">
       {/* T-Shirt Mockup Layer */}
       <div id="tshirt-canvas-mobile" className="relative w-full max-w-[320px] aspect-[4/5] flex items-center justify-center pointer-events-none">
         <div className={`absolute inset-0 transition-transform ${activeSide === 'back' ? '-scale-x-100' : ''}`}>

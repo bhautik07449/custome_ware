@@ -1,3 +1,4 @@
+import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 import { SAVED_DESIGNS } from '../../data/mockData';
 
@@ -6,7 +7,7 @@ export default function SavedDesigns() {
     <section className="mb-3xl">
       <div className="flex justify-between items-center mb-lg">
         <h2 className="font-headline-md text-headline-md text-on-surface">Saved Designs</h2>
-        <Link to="/designer" className="flex items-center gap-xs font-label-md text-label-md text-secondary hover:underline">
+        <Link to={PATHS.DESIGNER} className="flex items-center gap-xs font-label-md text-label-md text-secondary hover:underline">
           <span className="material-symbols-outlined text-[18px]">add</span>
           New Design
         </Link>

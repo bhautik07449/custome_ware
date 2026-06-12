@@ -1,3 +1,4 @@
+import { PATHS } from '../utils/routes';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import CartStepper from '../components/cart/CartStepper';
@@ -48,14 +49,14 @@ export default function Cart() {
 
       <header className="hidden md:flex fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 px-grid-margin py-md items-center justify-between">
         <div className="flex items-center gap-xl">
-          <Link className="font-headline-md text-headline-md font-bold text-on-surface" to="/">CustomWear</Link>
+          <Link className="font-headline-md text-headline-md font-bold text-on-surface" to={PATHS.HOME}>CustomWear</Link>
           <div className="hidden md:flex gap-lg">
-            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" to="/shop">Shop</Link>
-            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" to="/designer">Designer</Link>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" to={PATHS.SHOP}>Shop</Link>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" to={PATHS.DESIGNER}>Designer</Link>
           </div>
         </div>
         <div className="flex items-center gap-md">
-          <Link to="/dashboard" className="p-xs text-on-surface-variant hover:text-secondary transition-colors active:scale-95 flex">
+          <Link to={PATHS.DASHBOARD} className="p-xs text-on-surface-variant hover:text-secondary transition-colors active:scale-95 flex">
             <span className="material-symbols-outlined">account_circle</span>
           </Link>
         </div>

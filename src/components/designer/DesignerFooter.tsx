@@ -1,3 +1,4 @@
+import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 import { useDesigner, FABRIC_COLORS } from '../../context/DesignerContext';
 
@@ -49,7 +50,7 @@ export default function DesignerFooter() {
           <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-tight">Total Price</span>
           <span className="font-headline-md text-primary">${totalPrice.toFixed(2)}</span>
         </div>
-        <Link to="/cart" className="flex-1 bg-primary text-on-primary py-md px-xl rounded-full flex items-center justify-center gap-md active:scale-95 transition-transform">
+        <Link to={PATHS.CART} className="flex-1 bg-primary text-on-primary py-md px-xl rounded-full flex items-center justify-center gap-md active:scale-95 transition-transform">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>shopping_cart</span>
           <span className="font-label-md font-bold uppercase tracking-wide">Add to Cart</span>
         </Link>
@@ -84,7 +85,7 @@ export default function DesignerFooter() {
               <button className="hidden sm:block bg-surface border border-outline-variant text-on-surface px-xl py-md rounded-xl font-label-md hover:bg-surface-container transition-all active:scale-95">
                 Save Draft
               </button>
-              <Link to="/cart" className="bg-primary text-on-primary px-xl md:px-2xl py-md rounded-xl font-label-md shadow-lg shadow-primary/20 hover:bg-primary-container transition-all active:scale-95 whitespace-nowrap block text-center">
+              <Link to={PATHS.CART} className="bg-primary text-on-primary px-xl md:px-2xl py-md rounded-xl font-label-md shadow-lg shadow-primary/20 hover:bg-primary-container transition-all active:scale-95 whitespace-nowrap block text-center">
                 Add to Cart
               </Link>
             </div>
