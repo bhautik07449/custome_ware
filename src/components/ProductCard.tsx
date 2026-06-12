@@ -4,7 +4,7 @@ import type { Product } from '../data/mockData';
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="product-card group relative bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden flex flex-col transition-all duration-300 md:hover:shadow-lg shadow-sm md:shadow-none md:hover:-translate-y-1 active:scale-[0.98] md:active:scale-100">
-      <div className="relative aspect-[3/4] bg-[#F9FAFB] overflow-hidden">
+      <Link to={`/product/${product.id}`} className="relative aspect-[3/4] bg-[#F9FAFB] overflow-hidden block">
         <img alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src={product.image} />
         
         {/* Mobile Favorite Button */}
@@ -15,10 +15,10 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Desktop Hover Action Overlay */}
         <div className="hidden md:flex action-overlay absolute inset-0 bg-on-surface/20 opacity-0 transition-all duration-300 flex-col items-center justify-end p-md translate-y-4">
           <div className="w-full space-y-sm">
-            <button className="w-full py-3 bg-white text-on-surface font-label-md rounded-lg shadow-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+            <Link to={`/product/${product.id}`} className="w-full py-3 bg-white text-on-surface font-label-md rounded-lg shadow-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-[18px]">visibility</span>
               Quick View
-            </button>
+            </Link>
             <Link to="/designer" className="w-full py-3 bg-on-surface text-white font-label-md rounded-lg shadow-md hover:bg-secondary transition-all flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-[18px]">palette</span>
               Customize
@@ -31,11 +31,11 @@ export default function ProductCard({ product }: { product: Product }) {
             {product.badge}
           </span>
         )}
-      </div>
+      </Link>
       <div className="p-3 md:p-md flex flex-col flex-1 gap-1 md:gap-0">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start md:mb-xs">
-          <p className="font-label-md text-label-md text-on-surface-variant truncate md:hidden">{product.name.replace(/ Signature| Organic| Heavyweight| Sport| Oversized| Active/gi, '').trim()}</p>
-          <h3 className="hidden md:block font-label-md text-on-surface">{product.name}</h3>
+          <Link to={`/product/${product.id}`} className="font-label-md text-label-md text-on-surface-variant truncate md:hidden hover:text-primary transition-colors">{product.name.replace(/ Signature| Organic| Heavyweight| Sport| Oversized| Active/gi, '').trim()}</Link>
+          <Link to={`/product/${product.id}`} className="hidden md:block font-label-md text-on-surface hover:text-primary transition-colors"><h3>{product.name}</h3></Link>
           <div className="flex flex-col md:items-end">
             <p className="font-label-md text-label-md md:font-bold text-on-surface">${product.price.toFixed(2)}</p>
             {product.originalPrice && (

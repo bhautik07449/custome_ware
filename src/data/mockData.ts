@@ -6,8 +6,8 @@ export interface Product {
   image: string;
   rating: number;
   reviews: number;
-  colors: string[]; // tailwind classes or hex for the swatches
-  badge?: string; // e.g. "New Arrival", "Sale"
+  colors: string[];
+  badge?: string;
 }
 
 export const PRODUCTS: Product[] = [
