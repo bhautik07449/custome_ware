@@ -47,7 +47,7 @@ export default function Designer() {
       {/* ------------------------------------------------------------- */}
       {/* MOBILE HEADER (Studio Specific)                               */}
       {/* ------------------------------------------------------------- */}
-      <header className="md:hidden bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-md py-sm z-50">
+      <header className="md:hidden fixed top-0 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-md py-sm z-50">
         <div className="flex items-center gap-sm">
           <Link to="/" className="p-base active:scale-95 transition-transform flex items-center justify-center">
             <span className="material-symbols-outlined text-on-surface">close</span>
@@ -64,7 +64,7 @@ export default function Designer() {
         </div>
       </header>
 
-      <main className="flex-1 flex overflow-hidden pt-0 md:pt-[72px] pb-[136px] md:pb-[90px] relative">
+      <main className="flex-1 flex overflow-hidden pt-[64px] md:pt-[72px] pb-[136px] md:pb-[90px] relative">
         {/* ------------------------------------------------------------- */}
         {/* DESKTOP Left Panel                                            */}
         {/* ------------------------------------------------------------- */}

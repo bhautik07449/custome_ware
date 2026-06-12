@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
+import { PRODUCTS } from '../data/mockData';
 
 export default function Home() {
   useEffect(() => {
@@ -128,62 +129,21 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-grid-gutter">
-            {/* Product Card 1 */}
-            <div className="group">
-              <div className="relative aspect-[3/4] bg-surface-container rounded-xl overflow-hidden mb-md">
-                <img alt="Modern Graphic Tee" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNIJn12jci2MGvmRYwlWN50S_VGab3uueZogtjYdC75zaiWDQjNDabgoATAVi_JzHB42FS2FQVvOR4yfQ2VK_x2E0SSbNxH8G0RubyEBYUTp7Y9Afc44vyoriWn49Psy-xhs8vsHwiZ0wZYH6_NFKw1TXyB_N23tiHyRFiN6wIbOdGEnwa3xsJmaQt77WD9I5JxdmAQhZR-MMSq2mcmcw7PD-TbY-T6ZUcKyL4Q_kWM_Zo-22GeAyrRixAj61iLP2N8mfaj3D8X9E" />
-                <div className="absolute top-md right-md bg-surface px-sm py-xs rounded-full text-label-sm font-bold shadow-sm">
-                  $45.00
+            {PRODUCTS.slice(0, 4).map(product => (
+              <div key={product.id} className="group">
+                <div className="relative aspect-[3/4] bg-surface-container rounded-xl overflow-hidden mb-md">
+                  <img alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src={product.image} />
+                  <div className="absolute top-md right-md bg-surface px-sm py-xs rounded-full text-label-sm font-bold shadow-sm">
+                    ${product.price.toFixed(2)}
+                  </div>
+                  <Link to="/designer" className="absolute bottom-md left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 transition-all duration-300 bg-primary text-on-primary px-xl py-sm rounded-full font-label-md opacity-0 group-hover:opacity-100 flex items-center gap-sm whitespace-nowrap">
+                    <span className="material-symbols-outlined text-[18px]">edit</span> Customize
+                  </Link>
                 </div>
-                <Link to="/designer" className="absolute bottom-md left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 transition-all duration-300 bg-primary text-on-primary px-xl py-sm rounded-full font-label-md opacity-0 group-hover:opacity-100 flex items-center gap-sm whitespace-nowrap">
-                  <span className="material-symbols-outlined text-[18px]">edit</span> Customize
-                </Link>
+                <h4 className="font-label-md text-label-md">{product.name}</h4>
+                <p className="text-on-surface-variant text-label-sm">{product.badge || 'Trending'}</p>
               </div>
-              <h4 className="font-label-md text-label-md">Abstract Core Tee</h4>
-              <p className="text-on-surface-variant text-label-sm">Designer Collection</p>
-            </div>
-            {/* Product Card 2 */}
-            <div className="group">
-              <div className="relative aspect-[3/4] bg-surface-container rounded-xl overflow-hidden mb-md">
-                <img alt="Urban Style Tee" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnVeEn49w_DMHaXetAKGX8EsnTBSD_lud3-HXuQnvQkiRMyB4ew4Ng6-_idf3Mkt3T1I8rV-tOtak2Ov2-cxk5ka1xRBgjl9ebbhKzbV9oKagE6tstiBdpjcmiuM05I2B2fBKN6dQ_ePLbnpekC38jEI3WAMGKP4Z2xVHrWCY3FuFIjtdWFLwQfuNrTCSW9TanG6agxsXtQxEJLdgy8QPMVIWmevkamQdp9uu3BdSUCm_9IupI7-XGmdqv2nUTGfsEvH4VJzqmNTM" />
-                <div className="absolute top-md right-md bg-surface px-sm py-xs rounded-full text-label-sm font-bold shadow-sm">
-                  $38.00
-                </div>
-                <Link to="/designer" className="absolute bottom-md left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 transition-all duration-300 bg-primary text-on-primary px-xl py-sm rounded-full font-label-md opacity-0 group-hover:opacity-100 flex items-center gap-sm whitespace-nowrap">
-                  <span className="material-symbols-outlined text-[18px]">edit</span> Customize
-                </Link>
-              </div>
-              <h4 className="font-label-md text-label-md">Urban Typo Series</h4>
-              <p className="text-on-surface-variant text-label-sm">Limited Edition</p>
-            </div>
-            {/* Product Card 3 */}
-            <div className="group">
-              <div className="relative aspect-[3/4] bg-surface-container rounded-xl overflow-hidden mb-md">
-                <img alt="Minimalist Tee" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkZ7nWebux-vfizwitSkwElqdo1CqEtkrTaO5EZTFCjHrzCnGrMgqboNVz6jV5vNsApyKT2trxe_mwgDMG4IdR6So_Z8TZ78bNofWs8PwzXwT6uJ49qDZTKURrUaZAokAo027KsRCYWghxo1qp3k34T2MxxG8Zc4fePcI76r0WhNXQwgPiceOCl34UlHkSwJ9I_Gx3AmT33o2D2aEmS5KUnpkMmFvB8r7RK-G0vWj9XGvmPGHMtnIL7MRcnOZfztENWK2tbU4IFaA" />
-                <div className="absolute top-md right-md bg-surface px-sm py-xs rounded-full text-label-sm font-bold shadow-sm">
-                  $52.00
-                </div>
-                <Link to="/designer" className="absolute bottom-md left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 transition-all duration-300 bg-primary text-on-primary px-xl py-sm rounded-full font-label-md opacity-0 group-hover:opacity-100 flex items-center gap-sm whitespace-nowrap">
-                  <span className="material-symbols-outlined text-[18px]">edit</span> Customize
-                </Link>
-              </div>
-              <h4 className="font-label-md text-label-md">Minimalist Stitch</h4>
-              <p className="text-on-surface-variant text-label-sm">Premium Basics</p>
-            </div>
-            {/* Product Card 4 */}
-            <div className="group">
-              <div className="relative aspect-[3/4] bg-surface-container rounded-xl overflow-hidden mb-md">
-                <img alt="Retro Tee" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE-f1Wyvxq_wwvIfz0rsOgwMqhrqCPWMeC5pW-HulCfwDB4xU5K_QbMuFheaX1nxagSKCKy3tPh9uLNGl3sXd1rNy-K8bMaUQbPFU8LFe0DuPwoBpmI28i9BaQ62jE5KJ7xmyr4xP20qiN8mVk7BN9v4Sd3u0ApNIhxeSqECqzg7hj9wydkF8rpqCBxUVsWBx8tbQnhDfh-SimFaVnMx2Bk2D7hJ_pk025gjWV3JpgbDQfUringEuxBojakHHcb7dcPrtQYUNeiFI" />
-                <div className="absolute top-md right-md bg-surface px-sm py-xs rounded-full text-label-sm font-bold shadow-sm">
-                  $42.00
-                </div>
-                <Link to="/designer" className="absolute bottom-md left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 transition-all duration-300 bg-primary text-on-primary px-xl py-sm rounded-full font-label-md opacity-0 group-hover:opacity-100 flex items-center gap-sm whitespace-nowrap">
-                  <span className="material-symbols-outlined text-[18px]">edit</span> Customize
-                </Link>
-              </div>
-              <h4 className="font-label-md text-label-md">Retro Wave Tee</h4>
-              <p className="text-on-surface-variant text-label-sm">Artist Series</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -339,28 +299,18 @@ export default function Home() {
           <Link to="/shop" className="text-secondary font-label-md text-label-md">View all</Link>
         </div>
         <div className="flex gap-md overflow-x-auto px-md pb-md snap-x hide-scrollbar">
-          {/* Card 1 */}
-          <div className="flex-none w-64 snap-start group">
-            <div className="bg-surface-container-low rounded-lg overflow-hidden mb-sm border border-outline-variant/30 aspect-[4/5] relative">
-              <img className="w-full h-full object-cover" alt="Geometric Pulse" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIGC24EY4VnQUErGD3fBo4lZJkssqsOe6h-LdGDU6VsyRMnlw41apE_UhKAN60lrq-Cy2fwgk64f5TjI38YAMQtWX3eX_s-HrmIXdp3o7CLINunoJsd5gtzoHbwhfqjHwxMfvSSkFLjXtDpsIpYbeITgYkr4UaT4k05X_SvpIuL1iBYOm1NxJSTuwALAH1sF0CzIg-v-aK-RHSZ2mDW2tcytxkxTl8YPktQGFoIZAyJBTnOze-jBCAH6SnxLBKu7B8dM_CPN0WaIw" />
-              <button className="absolute top-sm right-sm w-10 h-10 rounded-full glass-card flex items-center justify-center">
-                <span className="material-symbols-outlined text-on-surface">favorite</span>
-              </button>
+          {PRODUCTS.slice(0, 4).map(product => (
+            <div key={product.id} className="flex-none w-64 snap-start group">
+              <div className="bg-surface-container-low rounded-lg overflow-hidden mb-sm border border-outline-variant/30 aspect-[4/5] relative">
+                <img className="w-full h-full object-cover" alt={product.name} src={product.image} />
+                <button className="absolute top-sm right-sm w-10 h-10 rounded-full glass-card flex items-center justify-center">
+                  <span className="material-symbols-outlined text-on-surface">favorite</span>
+                </button>
+              </div>
+              <h4 className="font-label-md text-label-md text-on-surface">{product.name}</h4>
+              <p className="font-body-md text-body-md text-on-surface-variant">${product.price.toFixed(2)}</p>
             </div>
-            <h4 className="font-label-md text-label-md text-on-surface">Geometric Pulse</h4>
-            <p className="font-body-md text-body-md text-on-surface-variant">$34.00</p>
-          </div>
-          {/* Card 2 */}
-          <div className="flex-none w-64 snap-start group">
-            <div className="bg-surface-container-low rounded-lg overflow-hidden mb-sm border border-outline-variant/30 aspect-[4/5] relative">
-              <img className="w-full h-full object-cover" alt="Tokyo Minimal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUwJyJH2cvHLkEHlbufrZ1UAfFeeOuqx_65GJFk7adMW8EVR-pqFmd0L93ZRqOHs-UXPgnwSEbgsGDj-hwL1aZur-WjO8lVc5gt2nX4LV3v-b6oIYuHFAsspGHiT4gsW-Iul29rRfNUZTRRb1en4QRyMTCp1HJ3uitrFTRs0KGzPJrCkNEV3Xw-5_B4WMURwWD8Tigxkc8rgmpURlbDQt7PzLmnulSCqsCk89GGd2eUUXyHcrV_QUVnE5jk6ImDZfFcG7ieoqnyJI" />
-              <button className="absolute top-sm right-sm w-10 h-10 rounded-full glass-card flex items-center justify-center">
-                <span className="material-symbols-outlined text-on-surface">favorite</span>
-              </button>
-            </div>
-            <h4 className="font-label-md text-label-md text-on-surface">Tokyo Minimal</h4>
-            <p className="font-body-md text-body-md text-on-surface-variant">$38.00</p>
-          </div>
+          ))}
         </div>
       </section>
 

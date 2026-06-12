@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ORDERS, SAVED_DESIGNS } from '../data/mockData';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('orders');
@@ -91,38 +92,24 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/20">
-                <tr className="hover:bg-surface-container-low/50 transition-colors">
-                  <td className="p-md">
-                    <div className="w-16 h-16 bg-surface-container rounded border border-outline-variant/30 overflow-hidden">
-                      <img className="w-full h-full object-cover" alt="Order Preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFmqxhcDBFklQNBQ_CwRv10M-iJnpRMnRLcUqxxfXDjrHbTDuiwuI39_hS1ZmaOvK12QaFn9yp1PjlF2lBAF7I76phsdy3a-wFyTu5fR8MgKyNJEHsKX1Ar5cOMWYrwRqAL2QhswX8Er1AGVW7aOfl1Icwuger16WAxt2rD_q2rEbiYDJoMxgxt_B2Qlppw9gXZNF94f2izj9tr6xXiQEcPNiU0Tv0WrQ0_NXzTzCj4tIRXkGE14jazMnM21U7ZRPqbVcBFKve0Y8" />
-                    </div>
-                  </td>
-                  <td className="p-md font-body-md text-body-md text-on-surface">#CW-92831</td>
-                  <td className="p-md font-body-md text-body-md text-on-surface">Oct 24, 2023</td>
-                  <td className="p-md">
-                    <span className="px-sm py-xs bg-secondary-fixed text-on-secondary-fixed-variant rounded-full text-[12px] font-bold">Shipped</span>
-                  </td>
-                  <td className="p-md font-body-md text-body-md text-on-surface">$42.00</td>
-                  <td className="p-md text-right">
-                    <button className="px-md py-sm bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-secondary active-scale">Reorder</button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-surface-container-low/50 transition-colors">
-                  <td className="p-md">
-                    <div className="w-16 h-16 bg-surface-container rounded border border-outline-variant/30 overflow-hidden">
-                      <img className="w-full h-full object-cover" alt="Order Preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO6QBkIcxd5vIV-it495Mu4fMeEKdCClusR-wK12AdpTIvNgU-qMxNbu-rmAK2u9BDzAk7RrFz1D-3ZdAFGjlzjheiSsR3oJwMg-vBololLlMxfcWM8sVOdVIhAs7JHetRKrke6P7tmA3CSe1ZZv0ChBH4vZHPCvr0VoM2ZjXzw3EBV1mqXOhufVEV-_5javvCebsQssyoPc5ZtUjIa_GHmMSKF0O1CHarJQsnKlw9tDDWBo1uQ6KLHB7siRxRv59t58uZZv31ZLE" />
-                    </div>
-                  </td>
-                  <td className="p-md font-body-md text-body-md text-on-surface">#CW-92804</td>
-                  <td className="p-md font-body-md text-body-md text-on-surface">Oct 12, 2023</td>
-                  <td className="p-md">
-                    <span className="px-sm py-xs bg-surface-container-high text-on-surface-variant rounded-full text-[12px] font-bold">Delivered</span>
-                  </td>
-                  <td className="p-md font-body-md text-body-md text-on-surface">$38.50</td>
-                  <td className="p-md text-right">
-                    <button className="px-md py-sm bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-secondary active-scale">Reorder</button>
-                  </td>
-                </tr>
+                {ORDERS.map(order => (
+                  <tr key={order.id} className="hover:bg-surface-container-low/50 transition-colors">
+                    <td className="p-md">
+                      <div className="w-16 h-16 bg-surface-container rounded border border-outline-variant/30 overflow-hidden">
+                        <img className="w-full h-full object-cover" alt={order.name} src={order.image} />
+                      </div>
+                    </td>
+                    <td className="p-md font-body-md text-body-md text-on-surface">{order.orderNumber}</td>
+                    <td className="p-md font-body-md text-body-md text-on-surface">{order.date}</td>
+                    <td className="p-md">
+                      <span className={`px-sm py-xs ${order.status === 'Shipped' || order.status === 'In Transit' ? 'bg-secondary-fixed text-on-secondary-fixed-variant' : 'bg-surface-container-high text-on-surface-variant'} rounded-full text-[12px] font-bold`}>{order.status}</span>
+                    </td>
+                    <td className="p-md font-body-md text-body-md text-on-surface">${order.total.toFixed(2)}</td>
+                    <td className="p-md text-right">
+                      <button className="px-md py-sm bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-secondary active-scale">Reorder</button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -138,77 +125,25 @@ export default function Dashboard() {
             </Link>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-grid-gutter">
-            <div className="group relative bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-hidden hover:shadow-lg transition-all">
-              <div className="aspect-square bg-white flex items-center justify-center p-md">
-                <img className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt="Minimalist Peak" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk_567VbS9O15Eg-1p7vMBLO4hQ028hsF5fp9CMM0vsCPGg84Ag_1BCb4msU0fUNK_PDgsHGZui_SbrrWo5Zk2zAm1NqDvx-vVbiakSCkpv29JtuhqqanlBvsj7ecRjrbY62L1zLo2KB-Pa193TEb_irJO--mKVOb4QL8V-5AW4v9JcuBNzv-Z-HeQuEt6LzeoJuUHXAqTpiKQZNb6kEqV49xfk_PMLseQtxb-HMMxA-7HDpwpy-FIIB3LBStv6-ZoIqfucxK55Wo" />
+            {SAVED_DESIGNS.map(design => (
+              <div key={design.id} className="group relative bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-hidden hover:shadow-lg transition-all">
+                <div className="aspect-square bg-white flex items-center justify-center p-md">
+                  <img className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt={design.name} src={design.image} />
+                </div>
+                <div className="p-md">
+                  <p className="font-label-md text-label-md text-on-surface truncate">{design.name}</p>
+                  <p className="text-[12px] text-on-surface-variant">{design.lastEdited}</p>
+                </div>
+                <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-md transition-opacity">
+                  <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+                    <span className="material-symbols-outlined">edit</span>
+                  </button>
+                  <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+                    <span className="material-symbols-outlined">shopping_cart</span>
+                  </button>
+                </div>
               </div>
-              <div className="p-md">
-                <p className="font-label-md text-label-md text-on-surface truncate">Minimalist Peak</p>
-                <p className="text-[12px] text-on-surface-variant">Edited 2 days ago</p>
-              </div>
-              <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-md transition-opacity">
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">edit</span>
-                </button>
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">shopping_cart</span>
-                </button>
-              </div>
-            </div>
-            
-            <div className="group relative bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-hidden hover:shadow-lg transition-all">
-              <div className="aspect-square bg-white flex items-center justify-center p-md">
-                <img className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt="Neon Pulse" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjxL63nLSlASU7Q_k5kl4-dP0RwLEnC9CYKyYVN-dOLRsAvf8qFW2WMxL0Gm-vcZEYmB5htS5v9mrVuDT90KujTGTi0c_JGkPr-U5941-6VZ-bYSiUFWXIi4WAcWp8ULkWelGNCai80tNNbCnGcBfVASyifnEGOCA4jN7xPrWQR0osFT2DZmds0GAVxysV6QYwAfuBcyCepTzaEyx_pVOIQqLTXDqIDM_-a6I7Gy-Q3umrCHDhAZB_mKYU8XBYTOa1nR4mmlUljYo" />
-              </div>
-              <div className="p-md">
-                <p className="font-label-md text-label-md text-on-surface truncate">Neon Pulse</p>
-                <p className="text-[12px] text-on-surface-variant">Edited 1 week ago</p>
-              </div>
-              <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-md transition-opacity">
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">edit</span>
-                </button>
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">shopping_cart</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="group relative bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-hidden hover:shadow-lg transition-all">
-              <div className="aspect-square bg-white flex items-center justify-center p-md">
-                <img className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt="Forest Emblem" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYeKv6h-GvrUwAuA1K_4Vew6EStbky1eukSI3q05nCph5Zw31zWshJBSathGlSup2U-SowzeA1aETM7kVMbE8N5tromnLCaHuG6rSNjQtJ-6Yn9sF4_K5m9UxyJjNE6LfXKfwY4pvoCNE8CKLBRURuSTEYOLrzvyTz06JTC0Vu7C8puO0h9cUFcPhA_IIzTLsV19dqPpSGrxt1GCzUGnp6alihdzRRkI368prmk7gNDykrvPpp1qI8J52u_5GnUOEdU3ykkE2jb0Q" />
-              </div>
-              <div className="p-md">
-                <p className="font-label-md text-label-md text-on-surface truncate">Forest Emblem</p>
-                <p className="text-[12px] text-on-surface-variant">Edited 2 weeks ago</p>
-              </div>
-              <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-md transition-opacity">
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">edit</span>
-                </button>
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">shopping_cart</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="group relative bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-hidden hover:shadow-lg transition-all">
-              <div className="aspect-square bg-white flex items-center justify-center p-md">
-                <img className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt="Digital Dusk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG40XCoolQBCkfwGTD67tDu6SrssVHpnD7rmTnVYpORS0u5d96ql6A5SxRqzzd_-psx-E7oe9NLOZbFYkLE1CQAE0RFe4fqGBqKP_9hPJOgwaDME6S4M_JjZTOEJyYdgnET08CJaBhaD58x-C6mksmzyTQbMtbloB8EEvZFNyBrnwm03zBs7_Oy4QO_t6olNrwMSN8UesJnrEoWIibxdetNZqI2_UKM-s2KslWwtstQc9nt15tyBzZW4ySkv2-y_57rLy0augBIzc" />
-              </div>
-              <div className="p-md">
-                <p className="font-label-md text-label-md text-on-surface truncate">Digital Dusk</p>
-                <p className="text-[12px] text-on-surface-variant">Edited 1 month ago</p>
-              </div>
-              <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-md transition-opacity">
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">edit</span>
-                </button>
-                <button className="p-sm bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">shopping_cart</span>
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
       </div>
@@ -257,49 +192,33 @@ export default function Dashboard() {
               <div className="flex justify-between items-center mb-sm">
                 <h3 className="font-label-md text-label-md text-on-surface uppercase tracking-wider">Recent Orders</h3>
               </div>
-              {/* Order Card 1 */}
-              <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md shadow-sm">
-                <div className="flex gap-md">
-                  <div className="w-20 h-20 bg-surface-container-low rounded-lg flex items-center justify-center p-sm">
-                    <img className="w-full h-full object-contain" alt="Abstract Geometry Tee" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAym2t6jaH51uJUJuEJijX1UCtl9LE1uvoTiArUmiQjrsSKp5qLbnKTXFdqtGxq97YL4Urnu3Wxse4x6jrwRADV2U5ch28VpU9vr7lk-c7CC4xi4yG3r2wY431-qXj04dQ0Lp-fJmrGxJP-iQnKmbdE-I7VylgExdkGHyhvtzqTx64alqwtrbbj7d1kCxk_4hknzZ2CDggoOAYtZcwCra2UJdB_-gZZUL_O5huvM5g7j9zO0Q120gDF1UMSa_YpCx6A76iJxUyHPXs" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <span className="font-label-sm text-label-sm text-secondary bg-secondary-container/20 px-sm py-xs rounded">In Transit</span>
-                      <span className="font-label-sm text-label-sm text-on-surface-variant">#ORD-8821</span>
+              {ORDERS.map(order => (
+                <div key={order.id} className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md shadow-sm">
+                  <div className="flex gap-md">
+                    <div className="w-20 h-20 bg-surface-container-low rounded-lg flex items-center justify-center p-sm">
+                      <img className="w-full h-full object-contain" alt={order.name} src={order.image} />
                     </div>
-                    <h4 className="font-label-md text-label-md text-on-surface mt-xs">Abstract Geometry Tee</h4>
-                    <p className="font-label-sm text-label-sm text-on-surface-variant">Size L • Custom Navy</p>
-                  </div>
-                </div>
-                <div className="mt-md pt-md border-t border-outline-variant/20 flex justify-between items-center">
-                  <span className="font-label-md text-label-md text-on-surface">$45.00</span>
-                  <button className="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md hover:scale-[1.02] active:scale-95 transition-all">Track Order</button>
-                </div>
-              </div>
-              {/* Order Card 2 */}
-              <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md shadow-sm">
-                <div className="flex gap-md">
-                  <div className="w-20 h-20 bg-surface-container-low rounded-lg flex items-center justify-center p-sm">
-                    <img className="w-full h-full object-contain" alt="Minimalist Studio Crew" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByBOoiV4eeUXJljxbu5MBxByJckZCD6gJXcpRmqsQXgU_HwVFEVisNfedXNEiQEblRvwbMmASua3_gjNIB735ZUIVoL0PlLhJlbvS6VH9Ylo7-Njovm0f98YLQ-i5LcA6i82s-_pU9BsuxykZkA-YWqTbd8G2QToT76GABqf-wgoDWERJAt9zBwdzcdOS-vXNyJsH5SBKGtg749XDSrYUouhJCSGHuEfVY6M5HVY4jm2vbuq7NCFVg-N8c9g4Po16tJ7TXJg7wQyI" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <span className="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-sm py-xs rounded">Delivered Oct 12</span>
-                      <span className="font-label-sm text-label-sm text-on-surface-variant">#ORD-7742</span>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start">
+                        <span className={`font-label-sm text-label-sm ${order.status === 'Shipped' || order.status === 'In Transit' ? 'text-secondary bg-secondary-container/20' : 'text-on-surface-variant bg-surface-container'} px-sm py-xs rounded`}>{order.status}</span>
+                        <span className="font-label-sm text-label-sm text-on-surface-variant">{order.orderNumber}</span>
+                      </div>
+                      <h4 className="font-label-md text-label-md text-on-surface mt-xs">{order.name}</h4>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant">{order.details}</p>
                     </div>
-                    <h4 className="font-label-md text-label-md text-on-surface mt-xs">Minimalist Studio Crew</h4>
-                    <p className="font-label-sm text-label-sm text-on-surface-variant">Size M • Stealth Black</p>
+                  </div>
+                  <div className="mt-md pt-md border-t border-outline-variant/20 flex justify-between items-center">
+                    <span className="font-label-md text-label-md text-on-surface">${order.total.toFixed(2)}</span>
+                    <button className={order.status === 'Delivered' ? 'bg-surface-container-high text-on-surface px-lg py-sm rounded-lg font-label-md border border-outline-variant/50 flex items-center gap-xs active:scale-95 transition-all' : 'bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md hover:scale-[1.02] active:scale-95 transition-all'}>
+                      {order.status === 'Delivered' ? (
+                        <><span className="material-symbols-outlined text-[18px]">replay</span>Reorder</>
+                      ) : (
+                        'Track Order'
+                      )}
+                    </button>
                   </div>
                 </div>
-                <div className="mt-md pt-md border-t border-outline-variant/20 flex justify-between items-center">
-                  <span className="font-label-md text-label-md text-on-surface">$72.00</span>
-                  <button className="bg-surface-container-high text-on-surface px-lg py-sm rounded-lg font-label-md border border-outline-variant/50 flex items-center gap-xs active:scale-95 transition-all">
-                    <span className="material-symbols-outlined text-[18px]">replay</span>
-                    Reorder
-                  </button>
-                </div>
-              </div>
+              ))}
             </div>
           )}
 
@@ -311,27 +230,28 @@ export default function Dashboard() {
                 <Link to="/designer" className="text-secondary font-label-sm">+ New Design</Link>
               </div>
               <div className="grid grid-cols-1 gap-md">
-                {/* Design Card 1 */}
-                <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm group">
-                  <div className="aspect-square bg-surface-container-low relative">
-                    <img className="w-full h-full object-contain p-xl" alt="Urban Echo Prototype" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoHpA59Rz_6qw59Jnei3UMB3Yw9mWHsha1Zxo2pxtsle1256NXVmOxlbNK5KSN2JNKYIrDSx110qUzoS5KQ8qjt9tNebPzkWBWAUcSO1QD9ghi4LbkjAmyac4tRdUndayT1lmsk5q1LJsoXfe20VVzCUp_ub7MYgC2li9sKLkdFNdypTOJsCkuNEKxQ1flQ6Stg-Ytf9uzTyb-NOs_Sikh_3Rhi0MPAXja7Gm0raYGQ3oAP2PUqpVe7uldkPZmDlwBFvSO44_OK98" />
-                    <div className="absolute top-md right-md">
-                      <button className="w-8 h-8 rounded-full bg-white/80 backdrop-blur shadow-md flex items-center justify-center active:scale-95 transition-transform">
-                        <span className="material-symbols-outlined text-error text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-                      </button>
+                {SAVED_DESIGNS.map(design => (
+                  <div key={design.id} className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm group">
+                    <div className="aspect-square bg-surface-container-low relative">
+                      <img className="w-full h-full object-contain p-xl" alt={design.name} src={design.image} />
+                      <div className="absolute top-md right-md">
+                        <button className="w-8 h-8 rounded-full bg-white/80 backdrop-blur shadow-md flex items-center justify-center active:scale-95 transition-transform">
+                          <span className="material-symbols-outlined text-error text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div className="p-md">
+                      <h4 className="font-label-md text-label-md text-on-surface">{design.name}</h4>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant mb-md">{design.lastEdited}</p>
+                      <div className="flex gap-sm">
+                        <Link to="/designer" className="flex-1 bg-primary text-on-primary py-sm rounded-lg font-label-md active:scale-95 transition-all text-center">Edit Design</Link>
+                        <button className="w-12 border border-outline-variant rounded-lg flex items-center justify-center hover:bg-surface-container active:scale-95 transition-all">
+                          <span className="material-symbols-outlined">share</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-md">
-                    <h4 className="font-label-md text-label-md text-on-surface">Urban Echo Prototype</h4>
-                    <p className="font-label-sm text-label-sm text-on-surface-variant mb-md">Last edited 2 days ago</p>
-                    <div className="flex gap-sm">
-                      <Link to="/designer" className="flex-1 bg-primary text-on-primary py-sm rounded-lg font-label-md active:scale-95 transition-all text-center">Edit Design</Link>
-                      <button className="w-12 border border-outline-variant rounded-lg flex items-center justify-center hover:bg-surface-container active:scale-95 transition-all">
-                        <span className="material-symbols-outlined">share</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           )}

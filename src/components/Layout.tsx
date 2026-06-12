@@ -2,11 +2,11 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 export default function Layout() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
   const isNoShell = location.pathname === '/designer' || location.pathname === '/cart';
+  const isDashboard = location.pathname.startsWith('/dashboard');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,7 +21,7 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className={`min-h-screen flex flex-col font-body-md overflow-x-hidden ${isNoShell ? 'bg-background text-on-background selection:bg-secondary-fixed-dim selection:text-on-secondary-fixed' : 'bg-surface text-on-surface'}`}>
+    <div className={`min-h-[100dvh] flex flex-col font-body-md ${isNoShell ? 'bg-background text-on-background selection:bg-secondary-fixed-dim selection:text-on-secondary-fixed' : 'bg-surface text-on-surface'}`}>
       {/* TopNavBar */}
       {!isNoShell && (
         <header className={`fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 transition-all duration-300 ${scrolled ? 'py-sm shadow-sm' : ''}`}>
@@ -50,20 +50,20 @@ export default function Layout() {
       {/* Bottom Navigation Bar (Mobile) */}
       {!isNoShell && (
         <div className="fixed bottom-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-t border-outline-variant/30 px-md py-sm flex justify-around items-center md:hidden pb-safe">
-          <Link to="/" className="flex flex-col items-center gap-xs text-secondary">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
+          <Link to="/" className={`flex flex-col items-center gap-xs ${location.pathname === '/' ? 'text-secondary font-bold' : 'text-on-surface-variant hover:text-secondary'}`}>
+            <span className="material-symbols-outlined" style={location.pathname === '/' ? { fontVariationSettings: "'FILL' 1" } : {}}>home</span>
             <span className="font-label-sm text-label-sm">Home</span>
           </Link>
-          <Link to="/shop" className="flex flex-col items-center gap-xs text-on-surface-variant hover:text-secondary">
-            <span className="material-symbols-outlined">search</span>
+          <Link to="/shop" className={`flex flex-col items-center gap-xs ${location.pathname.startsWith('/shop') ? 'text-secondary font-bold' : 'text-on-surface-variant hover:text-secondary'}`}>
+            <span className="material-symbols-outlined" style={location.pathname.startsWith('/shop') ? { fontVariationSettings: "'FILL' 1" } : {}}>storefront</span>
             <span className="font-label-sm text-label-sm">Shop</span>
           </Link>
-          <Link to="/designer" className="flex flex-col items-center gap-xs text-on-surface-variant hover:text-secondary">
-            <span className="material-symbols-outlined">palette</span>
-            <span className="font-label-sm text-label-sm">Create</span>
+          <Link to="/designer" className={`flex flex-col items-center gap-xs ${location.pathname.startsWith('/designer') ? 'text-secondary font-bold' : 'text-on-surface-variant hover:text-secondary'}`}>
+            <span className="material-symbols-outlined" style={location.pathname.startsWith('/designer') ? { fontVariationSettings: "'FILL' 1" } : {}}>brush</span>
+            <span className="font-label-sm text-label-sm">Designer</span>
           </Link>
-          <Link to="/dashboard" className="flex flex-col items-center gap-xs text-on-surface-variant hover:text-secondary">
-            <span className="material-symbols-outlined">person</span>
+          <Link to="/dashboard" className={`flex flex-col items-center gap-xs ${location.pathname.startsWith('/dashboard') ? 'text-secondary font-bold' : 'text-on-surface-variant hover:text-secondary'}`}>
+            <span className="material-symbols-outlined" style={location.pathname.startsWith('/dashboard') ? { fontVariationSettings: "'FILL' 1" } : {}}>person</span>
             <span className="font-label-sm text-label-sm">Profile</span>
           </Link>
         </div>
@@ -75,8 +75,8 @@ export default function Layout() {
       </main>
 
       {/* Footer */}
-      {!isNoShell && (
-        <footer className="w-full py-3xl px-grid-margin bg-surface-container-highest border-t border-outline-variant mt-auto mb-[64px] md:mb-0">
+      {!isNoShell && !isDashboard && (
+        <footer className="hidden md:block w-full py-3xl px-grid-margin bg-surface-container-highest border-t border-outline-variant mt-auto mb-[64px] md:mb-0">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-grid-gutter max-w-7xl mx-auto">
           <div className="col-span-1 md:col-span-1 space-y-md">
             <Link className="font-headline-md text-headline-md font-bold text-on-surface" to="/">CustomWear</Link>
