@@ -1,5 +1,6 @@
 import { PATHS } from '../../utils/routes';
 import { Link, useLocation } from 'react-router-dom';
+import { useFavorites } from '../../context/FavoritesContext';
 
 interface HeaderProps {
   scrolled: boolean;
@@ -8,9 +9,9 @@ interface HeaderProps {
 export default function Header({ scrolled }: HeaderProps) {
   const location = useLocation();
   const currentPath = location.pathname;
-  
-  // TODO: Replace with real authentication context later
-  const isLoggedIn = false; 
+  const { favorites } = useFavorites();
+
+  const isLoggedIn = false;
 
   const isActive = (path: string) => currentPath.startsWith(path) && path !== PATHS.HOME || (path === PATHS.HOME && currentPath === PATHS.HOME);
 
@@ -20,14 +21,14 @@ export default function Header({ scrolled }: HeaderProps) {
         <div className="flex items-center gap-xl">
           <Link className="font-headline-md text-headline-md font-bold text-on-surface" to={PATHS.HOME}>CustomWear</Link>
           <div className="hidden md:flex gap-lg">
-            <Link 
-              className={`font-body-md text-body-md transition-colors duration-200 ${isActive(PATHS.SHOP) ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary'}`} 
+            <Link
+              className={`font-body-md text-body-md transition-colors duration-200 ${isActive(PATHS.SHOP) ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary'}`}
               to={PATHS.SHOP}
             >
               Shop
             </Link>
-            <Link 
-              className={`font-body-md text-body-md transition-colors duration-200 ${isActive(PATHS.DESIGNER) ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary'}`} 
+            <Link
+              className={`font-body-md text-body-md transition-colors duration-200 ${isActive(PATHS.DESIGNER) ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary'}`}
               to={PATHS.DESIGNER}
             >
               Designer
@@ -35,6 +36,12 @@ export default function Header({ scrolled }: HeaderProps) {
           </div>
         </div>
         <div className="flex items-center gap-md">
+          <Link to={PATHS.FAVORITES} className="hidden md:flex p-xs text-on-surface-variant hover:text-secondary transition-colors active:scale-95 relative">
+            <span className="material-symbols-outlined">favorite</span>
+            {favorites.length > 0 && (
+              <span className="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+            )}
+          </Link>
           {isLoggedIn ? (
             <>
               <Link to={PATHS.CART} className="p-xs text-on-surface-variant hover:text-secondary transition-colors active:scale-95 flex">
@@ -46,8 +53,8 @@ export default function Header({ scrolled }: HeaderProps) {
             </>
           ) : (
             <div className="hidden md:flex gap-2 items-center">
-              <Link className="font-label-md text-label-md text-on-surface hover:text-secondary transition-colors duration-200 px-4 py-2" to="/login">Log in</Link>
-              <button className="bg-on-surface text-surface px-6 py-2 rounded-lg font-label-md hover:bg-secondary hover:text-on-primary shadow-sm hover:shadow transition-all active:scale-95">Sign Up</button>
+              <Link className="font-label-md text-label-md text-on-surface hover:text-secondary transition-colors duration-200 px-4 py-2" to={PATHS.LOGIN}>Log in</Link>
+              <Link className="bg-on-surface text-surface px-6 py-2 rounded-lg font-label-md hover:bg-secondary hover:text-on-primary shadow-sm hover:shadow transition-all active:scale-95" to={PATHS.SIGNUP}>Sign Up</Link>
             </div>
           )}
         </div>

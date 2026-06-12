@@ -1,16 +1,34 @@
 import { Link } from 'react-router-dom';
 import { PATHS, getProductLink } from '../utils/routes';
 import type { Product } from '../data/mockData';
+import { useFavorites } from '../context/FavoritesContext';
 
 export default function ProductCard({ product }: { product: Product }) {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite(product.id);
   return (
     <div className="product-card group relative bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden flex flex-col transition-all duration-300 md:hover:shadow-lg shadow-sm md:shadow-none md:hover:-translate-y-1 active:scale-[0.98] md:active:scale-100">
       <Link to={getProductLink(product.id)} className="relative aspect-[3/4] bg-[#F9FAFB] overflow-hidden block">
         <img alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src={product.image} />
-        
+
         {/* Mobile Favorite Button */}
-        <button className="md:hidden absolute top-2 right-2 p-2 bg-surface/80 backdrop-blur rounded-full shadow-sm active:scale-90 transition-transform">
-          <span className="material-symbols-outlined text-secondary text-[20px]">favorite</span>
+        <button
+          onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }}
+          className="md:hidden absolute top-2 right-2 w-9 h-9 flex items-center justify-center bg-surface/80 backdrop-blur rounded-full shadow-sm active:scale-90 transition-transform z-10"
+        >
+          <span className={`material-symbols-outlined text-[20px] transition-colors ${favorited ? 'text-error' : 'text-on-surface-variant'}`} style={favorited ? { fontVariationSettings: "'FILL' 1" } : {}}>
+            favorite
+          </span>
+        </button>
+
+        {/* Desktop Favorite Button (Shows on hover) */}
+        <button
+          onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }}
+          className={`hidden md:flex absolute top-2 right-2 w-9 h-9 items-center justify-center bg-surface/80 backdrop-blur rounded-full shadow-sm transition-all z-10 ${favorited ? 'opacity-100 scale-100' : 'opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 active:scale-90'}`}
+        >
+          <span className={`material-symbols-outlined text-[20px] transition-colors ${favorited ? 'text-error' : 'text-on-surface-variant hover:text-error'}`} style={favorited ? { fontVariationSettings: "'FILL' 1" } : {}}>
+            favorite
+          </span>
         </button>
 
         {/* Desktop Hover Action Overlay */}
@@ -44,7 +62,7 @@ export default function ProductCard({ product }: { product: Product }) {
             )}
           </div>
         </div>
-        
+
         {/* Desktop Extras */}
         <div className="hidden md:flex items-center gap-1 mb-md">
           <div className="flex text-amber-400">

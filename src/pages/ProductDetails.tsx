@@ -33,22 +33,22 @@ export default function ProductDetails() {
     <div className="w-full pb-[140px] md:pb-0">
       <main className="pt-0 md:pt-8 lg:pt-32 pb-3xl max-w-7xl mx-auto px-0 md:px-grid-margin">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 md:gap-2xl">
-          
+
           <ImageGallery images={images} />
 
           <div className="lg:col-span-5 flex flex-col gap-lg md:gap-xl px-md md:px-0 pt-md md:pt-0">
             <ProductInfo />
 
-            <ColorSelector 
-              colors={availableColors} 
-              selectedColor={color} 
-              onSelectColor={setColor} 
+            <ColorSelector
+              colors={availableColors}
+              selectedColor={color}
+              onSelectColor={setColor}
             />
 
-            <SizeSelector 
-              sizes={availableSizes} 
-              selectedSize={selectedSize} 
-              onSelectSize={setSelectedSize} 
+            <SizeSelector
+              sizes={availableSizes}
+              selectedSize={selectedSize}
+              onSelectSize={setSelectedSize}
             />
 
             <ProductActions />

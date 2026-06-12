@@ -13,6 +13,9 @@ export const PATHS = {
   CART: `/${encodePath('cart')}`,
   DASHBOARD: `/${encodePath('dashboard')}`,
   PRODUCT: `/${encodePath('product')}`,
+  SIGNUP: `/${encodePath('signup')}`,
+  LOGIN: `/${encodePath('login')}`,
+  FAVORITES: `/${encodePath('favorites')}`,
 };
 
 // Helper to generate dynamic product links

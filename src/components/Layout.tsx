@@ -9,7 +9,7 @@ export default function Layout() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
-  const isNoShell = location.pathname === PATHS.DESIGNER || location.pathname === PATHS.CART;
+  const isNoShell = location.pathname === PATHS.DESIGNER || location.pathname === PATHS.CART || location.pathname === PATHS.LOGIN || location.pathname === PATHS.SIGNUP;
   const isDashboard = location.pathname.startsWith(PATHS.DASHBOARD);
 
   useEffect(() => {
