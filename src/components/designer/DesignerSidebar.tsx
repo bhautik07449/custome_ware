@@ -1,232 +1,362 @@
-import { useDesigner, FABRIC_COLORS } from '../../context/DesignerContext';
+import { useState } from 'react';
+import { useDesigner, FABRIC_COLORS, SHAPES, EMOJIS } from '../../context/DesignerContext';
+
+type TabName = 'Upload' | 'Text' | 'Shapes' | 'Emojis' | 'Layers' | 'Saved';
+
+const TABS: { id: TabName; icon: string; label: string }[] = [
+  { id: 'Upload',  icon: 'cloud_upload', label: 'Upload' },
+  { id: 'Text',    icon: 'title',        label: 'Text' },
+  { id: 'Shapes',  icon: 'category',     label: 'Shapes' },
+  { id: 'Emojis',  icon: 'mood',         label: 'Emojis' },
+  { id: 'Layers',  icon: 'layers',       label: 'Layers' },
+  { id: 'Saved',   icon: 'bookmark',     label: 'Saved' },
+];
 
 export default function DesignerSidebar() {
-  const { 
+  const {
     activeTab, setActiveTab, product, setProduct, layers, selectedLayerId, setSelectedLayerId,
     addTextLayer, deleteLayer, handleImageUpload, updateLayer, handleDownload,
-    isToolsSheetOpen, setIsToolsSheetOpen
+    addShapeLayer, addEmojiLayer, isToolsSheetOpen, setIsToolsSheetOpen,
+    savedDesigns, loadDesign, deleteDesign, saveDesign,
   } = useDesigner();
 
-  const getTabClass = (tabName: string) => {
-    if (activeTab === tabName) {
-      return "flex flex-row items-center border-l-2 border-secondary bg-surface-container-highest text-secondary p-md transition-all w-full text-left";
+  const [saveNameInput, setSaveNameInput] = useState('');
+  const [showSaveInput, setShowSaveInput] = useState(false);
+
+  const getTabClass = (tabName: string) =>
+    activeTab === tabName
+      ? 'flex flex-col items-center border-l-2 border-secondary bg-surface-container-highest text-secondary p-sm transition-all w-full text-center gap-xs'
+      : 'flex flex-col items-center text-on-surface-variant p-sm hover:bg-surface-container transition-all w-full text-center gap-xs';
+
+  const TabContent = () => {
+    switch (activeTab as TabName) {
+      // ── UPLOAD ──
+      case 'Upload':
+        return (
+          <div className="p-md space-y-lg">
+            <div>
+              <span className="font-label-md text-on-surface mb-md block">T-shirt Styles</span>
+              <div className="grid grid-cols-2 gap-sm">
+                {[
+                  { style: 'Classic Crew', src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDxK4y3yRFiANyp4lfIv8PdacSczx69-xXAS-nPRUZMIG9oijTv-xEuppCmBt7eADyXcfgaTTuu8ifUnHO5FkEsEJQI0eAJR9suux9sToR0DQ0ZeiZyd2RWRmMMGVQp73j05X-o18l0NWGWxbyRzZtlvX1_LaNP88vaFJCRaxJKE84j7gIC4aArT71gkHFOaFV6phImydVb0UTM-6T6OpCUc_4KyI22W7vQt9w1roa353VUu9BAMW8J1ru97rRe7HWvMHs9hm4qQhQ' },
+                  { style: 'Heavyweight', src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCe2QM45lKC7JSseGKCcRn-PD0UBjixpdJOm-y5Ksgs3XkWNmaQyeVqaU5hXkiaRDUgXwFPNYgs7VIod1N0uILLpD3lVw2ERDN-q4A15ujxIBfaN4IhptcRq779hFVxPrvqDWEYxNDX__jT1n40tomTmMWqO4L1AewutZcE3IpoiulfXUvNtCkJbnvNso40cZciKXJC9pslNZZ-Hl-OvG7Xp2beFnU8Cs0vHhhvfs48prZy0DYJ09SJYR1lPVp2MFtAQMxULK0hJcg' },
+                ].map(s => (
+                  <div
+                    key={s.style}
+                    onClick={() => setProduct({ ...product, style: s.style })}
+                    className={`border-2 rounded-xl p-sm bg-surface overflow-hidden cursor-pointer transition-all ${product.style === s.style ? 'border-secondary shadow-md shadow-secondary/20' : 'border-transparent hover:border-outline-variant'}`}
+                  >
+                    <img className="w-full aspect-square object-cover rounded-lg" alt={s.style} src={s.src} />
+                    <span className="text-label-sm mt-xs block text-center font-medium">{s.style}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <span className="font-label-md text-on-surface mb-md block">Fabric Colors</span>
+              <div className="flex flex-wrap gap-sm">
+                {FABRIC_COLORS.map(c => (
+                  <button
+                    key={c.id}
+                    onClick={() => setProduct({ ...product, color: c.value })}
+                    className={`w-8 h-8 rounded-full border-2 transition-all ${product.color === c.value ? 'ring-2 ring-secondary ring-offset-2 border-secondary scale-110' : 'border-outline-variant hover:scale-105'}`}
+                    style={{ backgroundColor: c.value }}
+                    title={c.name}
+                  />
+                ))}
+              </div>
+              <p className="text-[11px] text-on-surface-variant mt-sm">
+                Selected: <span className="font-medium text-on-surface">{FABRIC_COLORS.find(c => c.value === product.color)?.name || 'Custom'}</span>
+              </p>
+            </div>
+
+            <div className="bg-surface-container-high rounded-xl p-md border-2 border-dashed border-secondary/40 text-center cursor-pointer hover:bg-surface-container-highest transition-colors relative overflow-hidden group">
+              <input
+                type="file"
+                accept="image/*"
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                onChange={handleImageUpload}
+                title=""
+              />
+              <span className="material-symbols-outlined text-secondary mb-xs pointer-events-none text-[32px] group-hover:scale-110 transition-transform block">upload_file</span>
+              <p className="font-label-md text-on-surface pointer-events-none">Drop or click to upload</p>
+              <p className="text-[10px] text-on-surface-variant mt-xs pointer-events-none">SVG, PNG, or JPG (Max 10MB)</p>
+            </div>
+          </div>
+        );
+
+      // ── TEXT ──
+      case 'Text':
+        return (
+          <div className="p-md space-y-md">
+            <button
+              onClick={addTextLayer}
+              className="w-full bg-secondary text-on-secondary py-sm rounded-xl font-label-md shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-sm hover:brightness-110"
+            >
+              <span className="material-symbols-outlined">add</span>
+              Add Text Layer
+            </button>
+            <p className="text-label-sm text-on-surface-variant">Quick presets:</p>
+            <div className="space-y-sm">
+              {[
+                { label: 'HEADING', style: 'font-bold text-2xl font-sans', fontFamily: 'Inter', fontSize: 36, letterSpacing: 2 },
+                { label: 'Subheading', style: 'font-semibold text-lg font-serif', fontFamily: 'Playfair Display', fontSize: 24, letterSpacing: 0.5 },
+                { label: 'Body text', style: 'font-normal text-sm font-mono', fontFamily: 'Roboto Mono', fontSize: 16, letterSpacing: 0 },
+                { label: 'Handwritten', style: 'font-normal text-xl', fontFamily: 'Caveat Brush', fontSize: 28, letterSpacing: 1 },
+              ].map(preset => (
+                <div
+                  key={preset.label}
+                  onClick={() => {
+                    addTextLayer();
+                  }}
+                  className={`p-sm border border-outline-variant rounded-xl text-center cursor-pointer hover:bg-surface-container hover:border-secondary/50 transition-all ${preset.style}`}
+                  style={{ fontFamily: preset.fontFamily }}
+                >
+                  {preset.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      // ── SHAPES ──
+      case 'Shapes':
+        return (
+          <div className="p-md space-y-md">
+            <p className="font-label-md text-on-surface">Click a shape to add it</p>
+            <div className="grid grid-cols-4 gap-sm">
+              {SHAPES.map(shape => (
+                <button
+                  key={shape.id}
+                  onClick={() => addShapeLayer(shape.id)}
+                  title={shape.label}
+                  className="aspect-square bg-surface border border-outline-variant rounded-xl flex items-center justify-center hover:bg-surface-container hover:border-secondary/50 transition-all active:scale-95 p-sm"
+                >
+                  <svg viewBox="0 0 100 100" className="w-full h-full" fill="#3b82f6">
+                    <path d={shape.path} />
+                  </svg>
+                </button>
+              ))}
+            </div>
+            <p className="text-label-sm text-on-surface-variant text-center">Colors & opacity customizable after adding</p>
+          </div>
+        );
+
+      // ── EMOJIS ──
+      case 'Emojis':
+        return (
+          <div className="p-md space-y-md">
+            <p className="font-label-md text-on-surface">Click to add emoji</p>
+            <div className="grid grid-cols-5 gap-xs">
+              {EMOJIS.map(emoji => (
+                <button
+                  key={emoji}
+                  onClick={() => addEmojiLayer(emoji)}
+                  className="aspect-square text-[24px] bg-surface border border-outline-variant rounded-lg flex items-center justify-center hover:bg-surface-container hover:scale-110 transition-all active:scale-95"
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+
+      // ── LAYERS ──
+      case 'Layers':
+        return (
+          <div className="p-md space-y-sm">
+            <div className="flex items-center justify-between mb-md">
+              <h3 className="font-label-md text-on-surface">Design Layers</h3>
+              <span className="text-[11px] text-on-surface-variant">{layers.length} layer{layers.length !== 1 ? 's' : ''}</span>
+            </div>
+            {layers.length === 0 && (
+              <div className="text-center py-xl text-on-surface-variant">
+                <span className="material-symbols-outlined text-[40px] opacity-30 block mb-sm">layers</span>
+                <p className="text-label-sm">No layers yet. Add text, shapes, or upload images.</p>
+              </div>
+            )}
+            <div className="space-y-xs">
+              {[...layers].reverse().map(layer => (
+                <div
+                  key={layer.id}
+                  onClick={() => setSelectedLayerId(layer.id)}
+                  className={`flex items-center gap-sm p-sm rounded-xl border cursor-pointer transition-all ${layer.id === selectedLayerId ? 'bg-surface-container-highest border-secondary shadow-sm' : 'bg-surface border-transparent hover:border-outline-variant'}`}
+                >
+                  <span className="material-symbols-outlined text-[16px] text-secondary flex-shrink-0">
+                    {layer.type === 'text' ? 'title' : layer.type === 'shape' ? 'category' : layer.type === 'emoji' ? 'mood' : 'image'}
+                  </span>
+                  <span className="flex-1 font-label-sm truncate text-[12px]">{layer.name}</span>
+                  <button
+                    className="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-secondary transition-colors"
+                    onClick={e => { e.stopPropagation(); updateLayer(layer.id, { visible: !layer.visible }); }}
+                  >
+                    {layer.visible ? 'visibility' : 'visibility_off'}
+                  </button>
+                  <button
+                    className="material-symbols-outlined text-[16px] text-error hover:text-error/70 transition-colors"
+                    onClick={e => { e.stopPropagation(); deleteLayer(layer.id); }}
+                  >
+                    delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      // ── SAVED ──
+      case 'Saved':
+        return (
+          <div className="p-md space-y-md">
+            {/* Save new */}
+            {showSaveInput ? (
+              <div className="space-y-sm">
+                <input
+                  className="w-full bg-surface border border-outline-variant rounded-xl p-sm text-sm outline-none focus:ring-2 focus:ring-secondary"
+                  placeholder="Design name…"
+                  value={saveNameInput}
+                  onChange={e => setSaveNameInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      saveDesign(saveNameInput || undefined);
+                      setSaveNameInput('');
+                      setShowSaveInput(false);
+                    }
+                  }}
+                  autoFocus
+                />
+                <div className="flex gap-sm">
+                  <button
+                    onClick={() => { saveDesign(saveNameInput || undefined); setSaveNameInput(''); setShowSaveInput(false); }}
+                    className="flex-1 bg-secondary text-on-secondary py-xs rounded-lg font-label-sm active:scale-95 transition-transform"
+                  >Save</button>
+                  <button
+                    onClick={() => setShowSaveInput(false)}
+                    className="flex-1 bg-surface border border-outline-variant text-on-surface-variant py-xs rounded-lg font-label-sm active:scale-95 transition-transform"
+                  >Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowSaveInput(true)}
+                className="w-full bg-secondary text-on-secondary py-sm rounded-xl font-label-md flex items-center justify-center gap-sm active:scale-95 transition-transform hover:brightness-110"
+              >
+                <span className="material-symbols-outlined text-[18px]">save</span>
+                Save Current Design
+              </button>
+            )}
+
+            {savedDesigns.length === 0 ? (
+              <div className="text-center py-xl text-on-surface-variant">
+                <span className="material-symbols-outlined text-[40px] opacity-30 block mb-sm">bookmark</span>
+                <p className="text-label-sm">No saved designs yet</p>
+              </div>
+            ) : (
+              <div className="space-y-sm">
+                <p className="text-[11px] text-on-surface-variant font-medium uppercase tracking-wider">Saved ({savedDesigns.length}/10)</p>
+                {savedDesigns.map(d => (
+                  <div
+                    key={d.id}
+                    className="bg-surface border border-outline-variant rounded-xl p-sm flex items-center gap-sm hover:border-secondary/50 transition-all"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-label-md text-[12px] text-on-surface truncate">{d.name}</p>
+                      <p className="text-[10px] text-on-surface-variant">{new Date(d.savedAt).toLocaleDateString()} • {d.layers.length} layers</p>
+                    </div>
+                    <button
+                      onClick={() => loadDesign(d)}
+                      className="text-secondary font-label-sm text-[11px] hover:underline flex-shrink-0"
+                    >Load</button>
+                    <button
+                      onClick={() => deleteDesign(d.id)}
+                      className="material-symbols-outlined text-[16px] text-error hover:text-error/70 flex-shrink-0"
+                    >delete</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+
+      default:
+        return null;
     }
-    return "flex flex-row items-center text-on-surface-variant p-md hover:bg-surface-container transition-all w-full text-left";
   };
 
   return (
     <>
-    <aside className="h-full w-[320px] bg-surface-container-low border-r border-outline-variant hidden md:flex flex-col z-10 relative">
-      <div className="p-md border-b border-outline-variant flex justify-between items-center">
-        <div>
-          <h1 className="font-headline-md text-[18px] font-bold text-on-surface">Design Studio</h1>
-          <p className="text-label-sm text-on-surface-variant">V1.0 • Pro Builder</p>
-        </div>
-        <button onClick={handleDownload} className="bg-secondary text-on-secondary px-md py-xs rounded-lg font-label-md active:translate-x-1 transition-transform flex items-center gap-xs">
-          <span className="material-symbols-outlined text-[18px]">download</span>
-          Download
-        </button>
-      </div>
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
-        {/* Tool Groups */}
-        <div className="flex flex-col">
-          <button className={getTabClass('Upload')} onClick={() => setActiveTab('Upload')}>
-            <span className="material-symbols-outlined mr-md">cloud_upload</span>
-            <span className="font-label-md">Upload</span>
-          </button>
-          <button className={getTabClass('Text')} onClick={() => setActiveTab('Text')}>
-            <span className="material-symbols-outlined mr-md">title</span>
-            <span className="font-label-md">Text</span>
-          </button>
-          <button className={getTabClass('Elements')} onClick={() => setActiveTab('Elements')}>
-            <span className="material-symbols-outlined mr-md">category</span>
-            <span className="font-label-md">Elements</span>
-          </button>
-          <button className={getTabClass('Layers')} onClick={() => setActiveTab('Layers')}>
-            <span className="material-symbols-outlined mr-md">layers</span>
-            <span className="font-label-md">Layers</span>
+      {/* ── DESKTOP SIDEBAR ── */}
+      <aside className="h-full w-[300px] bg-surface-container-lowest border-r border-outline-variant hidden md:flex flex-col z-10 relative shadow-sm">
+        <div className="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+          <div>
+            <h1 className="font-headline-md text-[16px] font-bold text-on-surface">Design Studio</h1>
+            <p className="text-label-sm text-on-surface-variant">V2.0 • Pro Builder</p>
+          </div>
+          <button
+            onClick={handleDownload}
+            className="bg-secondary text-on-secondary px-md py-xs rounded-lg font-label-md active:scale-95 transition-transform flex items-center gap-xs hover:brightness-110 shadow-sm shadow-secondary/30"
+          >
+            <span className="material-symbols-outlined text-[16px]">download</span>
+            Export
           </button>
         </div>
 
-        <hr className="mx-md border-outline-variant/30 my-sm" />
+        <div className="flex flex-1 overflow-hidden">
+          {/* Icon nav */}
+          <nav className="w-[56px] border-r border-outline-variant bg-surface-container-low flex flex-col py-sm flex-shrink-0">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                className={getTabClass(tab.id)}
+                onClick={() => setActiveTab(tab.id)}
+                title={tab.label}
+              >
+                <span className="material-symbols-outlined text-[22px]">{tab.icon}</span>
+                <span className="text-[9px] font-bold uppercase tracking-wide">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
 
-        {/* Content Area for Tool Tabs */}
-        {activeTab === 'Upload' && (
-          <div className="p-md space-y-lg">
-            <div>
-              <span className="font-label-md text-on-surface mb-md block">T-shirt Styles</span>
-              <div className="grid grid-cols-2 gap-sm">
-                <div onClick={() => setProduct({ ...product, style: 'Classic Crew' })} className={`border-2 rounded-xl p-sm bg-surface overflow-hidden cursor-pointer ${product.style === 'Classic Crew' ? 'border-secondary' : 'border-transparent hover:border-outline-variant'}`}>
-                  <img className="w-full aspect-square object-cover rounded-lg" alt="Classic Crew" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxK4y3yRFiANyp4lfIv8PdacSczx69-xXAS-nPRUZMIG9oijTv-xEuppCmBt7eADyXcfgaTTuu8ifUnHO5FkEsEJQI0eAJR9suux9sToR0DQ0ZeiZyd2RWRmMMGVQp73j05X-o18l0NWGWxbyRzZtlvX1_LaNP88vaFJCRaxJKE84j7gIC4aArT71gkHFOaFV6phImydVb0UTM-6T6OpCUc_4KyI22W7vQt9w1roa353VUu9BAMW8J1ru97rRe7HWvMHs9hm4qQhQ" />
-                  <span className="text-label-sm mt-xs block text-center">Classic Crew</span>
-                </div>
-                <div onClick={() => setProduct({ ...product, style: 'Heavyweight' })} className={`border-2 rounded-xl p-sm bg-surface overflow-hidden cursor-pointer ${product.style === 'Heavyweight' ? 'border-secondary' : 'border-transparent hover:border-outline-variant'}`}>
-                  <img className="w-full aspect-square object-cover rounded-lg" alt="Heavyweight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe2QM45lKC7JSseGKCcRn-PD0UBjixpdJOm-y5Ksgs3XkWNmaQyeVqaU5hXkiaRDUgXwFPNYgs7VIod1N0uILLpD3lVw2ERDN-q4A15ujxIBfaN4IhptcRq779hFVxPrvqDWEYxNDX__jT1n40tomTmMWqO4L1AewutZcE3IpoiulfXUvNtCkJbnvNso40cZciKXJC9pslNZZ-Hl-OvG7Xp2beFnU8Cs0vHhhvfs48prZy0DYJ09SJYR1lPVp2MFtAQMxULK0hJcg" />
-                  <span className="text-label-sm mt-xs block text-center">Heavyweight</span>
-                </div>
-              </div>
-            </div>
-            <div>
-              <span className="font-label-md text-on-surface mb-md block">Fabric Colors</span>
-              <div className="flex flex-wrap gap-sm">
-                {FABRIC_COLORS.map(c => (
-                  <button key={c.id} onClick={() => setProduct({ ...product, color: c.value })} className={`w-8 h-8 rounded-full border border-outline-variant ${product.color === c.value ? 'ring-2 ring-secondary ring-offset-2' : ''}`} style={{ backgroundColor: c.value }} title={c.name}></button>
-                ))}
-              </div>
-            </div>
-            <div className="bg-surface-container-high rounded-xl p-md border border-dashed border-outline text-center cursor-pointer hover:bg-surface-container-highest transition-colors relative overflow-hidden">
-              <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={handleImageUpload} title="" />
-              <span className="material-symbols-outlined text-primary mb-xs pointer-events-none">upload_file</span>
-              <p className="font-label-md text-on-surface pointer-events-none">Drop assets here</p>
-              <p className="text-[10px] text-on-surface-variant mt-xs pointer-events-none">SVG, PNG, or JPG (Max 10MB)</p>
-            </div>
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <TabContent />
           </div>
-        )}
+        </div>
+      </aside>
 
-        {activeTab === 'Text' && (
-          <div className="p-md space-y-lg">
-            <button onClick={addTextLayer} className="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-sm">
-              <span className="material-symbols-outlined">add</span>
-              Add New Text
+      {/* ── MOBILE BOTTOM SHEET (Tools) ── */}
+      {isToolsSheetOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-[65] md:hidden backdrop-blur-sm"
+          onClick={() => setIsToolsSheetOpen(false)}
+        />
+      )}
+      <div
+        className={`fixed inset-x-0 bottom-[76px] bg-surface-container-lowest z-[70] rounded-t-3xl shadow-[0_-20px_40px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:hidden ${isToolsSheetOpen ? 'translate-y-0' : 'translate-y-full'}`}
+      >
+        <div className="flex justify-center pt-md pb-sm cursor-pointer" onClick={() => setIsToolsSheetOpen(false)}>
+          <div className="w-12 h-1.5 bg-outline-variant rounded-full" />
+        </div>
+
+        {/* Tab pills */}
+        <div className="px-md flex gap-sm overflow-x-auto hide-scrollbar pb-sm">
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-shrink-0 flex items-center gap-xs px-md py-xs rounded-full text-[12px] font-bold transition-all ${activeTab === tab.id ? 'bg-secondary text-on-secondary' : 'bg-surface-container text-on-surface-variant border border-outline-variant'}`}
+            >
+              <span className="material-symbols-outlined text-[14px]">{tab.icon}</span>
+              {tab.label}
             </button>
-            <div className="space-y-sm">
-              <p className="text-label-sm text-on-surface-variant">Or choose a preset:</p>
-              <div onClick={addTextLayer} className="p-sm border border-outline-variant rounded-lg text-center font-bold text-xl cursor-pointer hover:bg-surface-container transition-colors font-sans">HEADING</div>
-              <div onClick={addTextLayer} className="p-sm border border-outline-variant rounded-lg text-center font-semibold text-md cursor-pointer hover:bg-surface-container transition-colors font-serif">Subheading</div>
-              <div onClick={addTextLayer} className="p-sm border border-outline-variant rounded-lg text-center font-normal text-sm cursor-pointer hover:bg-surface-container transition-colors font-mono">Body text</div>
-            </div>
-          </div>
-        )}
+          ))}
+        </div>
 
-        {activeTab === 'Layers' && (
-          <div className="p-md space-y-sm">
-            <h3 className="font-label-md text-on-surface mb-md">Design Layers</h3>
-            <div className="space-y-xs">
-              {layers.length === 0 && <p className="text-label-sm text-on-surface-variant text-center py-md">No layers yet.</p>}
-              {layers.map(layer => (
-                <div
-                  key={layer.id}
-                  onClick={() => setSelectedLayerId(layer.id)}
-                  className={`flex items-center gap-md p-sm rounded-lg border cursor-pointer transition-all ${layer.id === selectedLayerId ? 'bg-surface-container-highest border-secondary' : 'bg-surface border-transparent hover:border-outline-variant'}`}
-                >
-                  <span className="material-symbols-outlined text-[18px]">{layer.type === 'text' ? 'title' : 'image'}</span>
-                  <span className="flex-1 font-label-sm truncate">{layer.name}</span>
-                  <span
-                    className="material-symbols-outlined text-[18px] cursor-pointer text-on-surface-variant hover:text-on-surface"
-                    onClick={(e) => { e.stopPropagation(); updateLayer(layer.id, { visible: !layer.visible }); }}
-                  >
-                    {layer.visible ? 'visibility' : 'visibility_off'}
-                  </span>
-                  <span
-                    className="material-symbols-outlined text-[18px] cursor-pointer text-error hover:text-error/80"
-                    onClick={(e) => { e.stopPropagation(); deleteLayer(layer.id); }}
-                  >
-                    delete
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="px-md pb-xl max-h-[45vh] overflow-y-auto custom-scrollbar">
+          <TabContent />
+        </div>
       </div>
-    </aside>
-
-    {/* ------------------------------------------------------------- */}
-    {/* MOBILE Tools Bottom Sheet                                     */}
-    {/* ------------------------------------------------------------- */}
-    {isToolsSheetOpen && (
-      <div 
-        className="fixed inset-0 bg-black/40 z-[65] md:hidden transition-opacity duration-300 backdrop-blur-sm"
-        onClick={() => setIsToolsSheetOpen(false)}
-      />
-    )}
-    <div
-      className={`fixed inset-x-0 bottom-[76px] bg-surface-container-lowest z-[70] rounded-t-3xl shadow-[0_-20px_40px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:hidden ${isToolsSheetOpen ? 'translate-y-0' : 'translate-y-full'}`}
-    >
-      <div className="flex justify-center pt-md pb-sm cursor-pointer" onClick={() => setIsToolsSheetOpen(false)}>
-        <div className="w-12 h-1.5 bg-outline-variant rounded-full"></div>
-      </div>
-      <div className="px-grid-margin pb-xl max-h-[50vh] overflow-y-auto custom-scrollbar">
-        {/* Render Content Based on Active Tab */}
-        {activeTab === 'Upload' && (
-          <div className="p-md space-y-lg">
-            <div>
-              <span className="font-label-md text-on-surface mb-md block">T-shirt Styles</span>
-              <div className="grid grid-cols-2 gap-sm">
-                <div onClick={() => setProduct({ ...product, style: 'Classic Crew' })} className={`border-2 rounded-xl p-sm bg-surface overflow-hidden cursor-pointer ${product.style === 'Classic Crew' ? 'border-secondary' : 'border-transparent hover:border-outline-variant'}`}>
-                  <img className="w-full aspect-square object-cover rounded-lg" alt="Classic Crew" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxK4y3yRFiANyp4lfIv8PdacSczx69-xXAS-nPRUZMIG9oijTv-xEuppCmBt7eADyXcfgaTTuu8ifUnHO5FkEsEJQI0eAJR9suux9sToR0DQ0ZeiZyd2RWRmMMGVQp73j05X-o18l0NWGWxbyRzZtlvX1_LaNP88vaFJCRaxJKE84j7gIC4aArT71gkHFOaFV6phImydVb0UTM-6T6OpCUc_4KyI22W7vQt9w1roa353VUu9BAMW8J1ru97rRe7HWvMHs9hm4qQhQ" />
-                  <span className="text-label-sm mt-xs block text-center">Classic Crew</span>
-                </div>
-                <div onClick={() => setProduct({ ...product, style: 'Heavyweight' })} className={`border-2 rounded-xl p-sm bg-surface overflow-hidden cursor-pointer ${product.style === 'Heavyweight' ? 'border-secondary' : 'border-transparent hover:border-outline-variant'}`}>
-                  <img className="w-full aspect-square object-cover rounded-lg" alt="Heavyweight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe2QM45lKC7JSseGKCcRn-PD0UBjixpdJOm-y5Ksgs3XkWNmaQyeVqaU5hXkiaRDUgXwFPNYgs7VIod1N0uILLpD3lVw2ERDN-q4A15ujxIBfaN4IhptcRq779hFVxPrvqDWEYxNDX__jT1n40tomTmMWqO4L1AewutZcE3IpoiulfXUvNtCkJbnvNso40cZciKXJC9pslNZZ-Hl-OvG7Xp2beFnU8Cs0vHhhvfs48prZy0DYJ09SJYR1lPVp2MFtAQMxULK0hJcg" />
-                  <span className="text-label-sm mt-xs block text-center">Heavyweight</span>
-                </div>
-              </div>
-            </div>
-            <div>
-              <span className="font-label-md text-on-surface mb-md block">Fabric Colors</span>
-              <div className="flex flex-wrap gap-sm">
-                {FABRIC_COLORS.map(c => (
-                  <button key={c.id} onClick={() => setProduct({ ...product, color: c.value })} className={`w-8 h-8 rounded-full border border-outline-variant ${product.color === c.value ? 'ring-2 ring-secondary ring-offset-2' : ''}`} style={{ backgroundColor: c.value }} title={c.name}></button>
-                ))}
-              </div>
-            </div>
-            <div className="bg-surface-container-high rounded-xl p-md border border-dashed border-outline text-center cursor-pointer hover:bg-surface-container-highest transition-colors relative overflow-hidden">
-              <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={handleImageUpload} title="" />
-              <span className="material-symbols-outlined text-primary mb-xs pointer-events-none">upload_file</span>
-              <p className="font-label-md text-on-surface pointer-events-none">Drop assets here</p>
-              <p className="text-[10px] text-on-surface-variant mt-xs pointer-events-none">SVG, PNG, or JPG (Max 10MB)</p>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'Text' && (
-          <div className="p-md space-y-lg">
-            <button onClick={() => { addTextLayer(); setIsToolsSheetOpen(false); }} className="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-sm">
-              <span className="material-symbols-outlined">add</span>
-              Add New Text
-            </button>
-            <div className="space-y-sm">
-              <p className="text-label-sm text-on-surface-variant">Or choose a preset:</p>
-              <div onClick={() => { addTextLayer(); setIsToolsSheetOpen(false); }} className="p-sm border border-outline-variant rounded-lg text-center font-bold text-xl cursor-pointer hover:bg-surface-container transition-colors font-sans">HEADING</div>
-              <div onClick={() => { addTextLayer(); setIsToolsSheetOpen(false); }} className="p-sm border border-outline-variant rounded-lg text-center font-semibold text-md cursor-pointer hover:bg-surface-container transition-colors font-serif">Subheading</div>
-              <div onClick={() => { addTextLayer(); setIsToolsSheetOpen(false); }} className="p-sm border border-outline-variant rounded-lg text-center font-normal text-sm cursor-pointer hover:bg-surface-container transition-colors font-mono">Body text</div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'Layers' && (
-          <div className="p-md space-y-sm">
-            <h3 className="font-label-md text-on-surface mb-md">Design Layers</h3>
-            <div className="space-y-xs">
-              {layers.length === 0 && <p className="text-label-sm text-on-surface-variant text-center py-md">No layers yet.</p>}
-              {layers.map(layer => (
-                <div
-                  key={layer.id}
-                  onClick={() => { setSelectedLayerId(layer.id); setIsToolsSheetOpen(false); }}
-                  className={`flex items-center gap-md p-sm rounded-lg border cursor-pointer transition-all ${layer.id === selectedLayerId ? 'bg-surface-container-highest border-secondary' : 'bg-surface border-transparent hover:border-outline-variant'}`}
-                >
-                  <span className="material-symbols-outlined text-[18px]">{layer.type === 'text' ? 'title' : 'image'}</span>
-                  <span className="flex-1 font-label-sm truncate">{layer.name}</span>
-                  <span
-                    className="material-symbols-outlined text-[18px] cursor-pointer text-on-surface-variant hover:text-on-surface"
-                    onClick={(e) => { e.stopPropagation(); updateLayer(layer.id, { visible: !layer.visible }); }}
-                  >
-                    {layer.visible ? 'visibility' : 'visibility_off'}
-                  </span>
-                  <span
-                    className="material-symbols-outlined text-[18px] cursor-pointer text-error hover:text-error/80"
-                    onClick={(e) => { e.stopPropagation(); deleteLayer(layer.id); }}
-                  >
-                    delete
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
     </>
   );
 }

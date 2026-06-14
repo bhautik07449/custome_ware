@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import HeroSection from '../components/home/HeroSection';
 import DesktopFeatures from '../components/home/DesktopFeatures';
 import FeaturedProducts from '../components/home/FeaturedProducts';
@@ -8,41 +8,53 @@ import MobileFeatures from '../components/home/MobileFeatures';
 import MobileCTA from '../components/home/MobileCTA';
 
 export default function Home() {
+  const pageRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1
+    // Scroll-reveal: watch all elements with reveal-* classes
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    const revealEls = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
+    revealEls.forEach((el) => revealObserver.observe(el));
+
+    // Draw-path SVG animation
+    const pathObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    const pathEls = document.querySelectorAll('.draw-path');
+    pathEls.forEach((el) => pathObserver.observe(el));
+
+    return () => {
+      revealObserver.disconnect();
+      pathObserver.disconnect();
     };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          entry.target.classList.remove('opacity-0', 'translate-y-8');
-        }
-      });
-    }, observerOptions);
-
-    const elements = document.querySelectorAll('.bento-item, .group, .animate-fade-in');
-    elements.forEach(el => {
-      el.classList.add('opacity-0', 'translate-y-8', 'transition-all', 'duration-700', 'ease-out');
-      observer.observe(el);
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="flex flex-col">
-
+    <div ref={pageRef} className="flex flex-col">
       <HeroSection />
       <DesktopFeatures />
       <FeaturedProducts />
       <HowItWorks />
       <Testimonials />
-
       <MobileFeatures />
       <MobileCTA />
-
     </div>
   );
 }
