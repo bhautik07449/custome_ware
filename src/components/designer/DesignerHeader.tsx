@@ -50,8 +50,8 @@ export default function DesignerHeader() {
               </>
             ) : (
               <div className="hidden md:flex gap-2 items-center">
-                <Link className="font-label-md text-label-md text-on-surface hover:text-secondary transition-colors px-4 py-2" to="/login">Log in</Link>
-                <button className="bg-on-surface text-surface px-6 py-2 rounded-lg font-label-md hover:bg-secondary hover:text-on-primary shadow-sm transition-all active:scale-95">Sign Up</button>
+                <Link className="font-label-md text-label-md text-on-surface hover:text-secondary transition-colors px-4 py-2" to={PATHS.LOGIN}>Log in</Link>
+                <Link className="bg-on-surface text-surface px-6 py-2 rounded-lg font-label-md hover:bg-secondary hover:text-on-primary shadow-sm transition-all active:scale-95" to={PATHS.SIGNUP}>Sign Up</Link>
               </div>
             )}
           </div>

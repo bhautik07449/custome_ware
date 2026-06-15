@@ -3,7 +3,7 @@ import { PATHS } from '../utils/routes';
 
 export default function Login() {
   return (
-    <div className="bg-background text-on-background min-h-[100dvh] flex flex-col items-center overflow-x-hidden font-body-md w-full">
+    <div className="bg-background text-on-background h-[100dvh] flex flex-col items-center overflow-hidden font-body-md w-full">
       <header className="fixed top-0 w-full z-50 flex items-center justify-between px-6 md:px-12 h-20 backdrop-blur-xl border-b border-outline-variant/20 bg-surface/80">
         <Link to={PATHS.HOME} className="flex items-center gap-sm hover:opacity-70 transition-opacity bg-surface-container-highest p-2 rounded-full">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
@@ -12,19 +12,12 @@ export default function Login() {
         <div className="w-10"></div>
       </header>
 
-      <main className="flex-grow w-full max-w-md px-6 pt-32 pb-12 flex flex-col mx-auto">
-        <div className="mb-10 text-center">
+      <main className="flex-grow w-full max-w-md px-6 pt-24 pb-6 flex flex-col mx-auto justify-center">
+        <div className="mb-6 text-center">
           <h2 className="font-display-xl text-[32px] leading-tight text-on-surface mb-2 font-bold">Welcome back</h2>
           <p className="font-body-md text-body-md text-on-surface-variant">Sign in to continue your creative journey.</p>
         </div>
 
-        <div className="w-full h-48 rounded-xl overflow-hidden mb-xl bg-surface-container-low border border-outline-variant/20 hidden md:block">
-          <img
-            className="w-full h-full object-cover grayscale opacity-80"
-            alt="Minimalist fashion studio"
-            src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop"
-          />
-        </div>
 
         <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
           <div className="space-y-2">
@@ -65,13 +58,13 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="flex items-center my-8 gap-4">
+        <div className="flex items-center my-6 gap-4">
           <div className="h-[1px] flex-grow bg-outline-variant/30"></div>
           <span className="font-label-sm text-label-sm text-on-surface-variant/50 uppercase tracking-widest font-bold">Or continue with</span>
           <div className="h-[1px] flex-grow bg-outline-variant/30"></div>
         </div>
 
-        <div className="flex gap-4 mb-10">
+        <div className="flex gap-4 mb-6">
           <button className="flex-1 h-14 rounded-xl border border-outline-variant/50 bg-surface flex items-center justify-center hover:bg-surface-variant transition-colors active:scale-95 shadow-sm group">
             <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -89,7 +82,7 @@ export default function Login() {
           </button>
         </div>
 
-        <div className="mt-auto pt-lg text-center">
+        <div className="mt-auto pt-sm text-center">
           <p className="font-body-md text-body-md text-on-surface-variant">
             Don't have an account?
             <Link className="text-secondary font-bold hover:underline transition-all decoration-2 underline-offset-4 ml-2" to={PATHS.SIGNUP}>Register</Link>
