@@ -1,6 +1,7 @@
 import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 import { ORDERS, SAVED_DESIGNS } from '../../data/mockData';
+import { Card } from '../ui/Card';
 
 interface MobileDashboardProps {
   activeTab: string;
@@ -48,7 +49,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
               <h3 className="font-label-md text-label-md text-on-surface uppercase tracking-wider">Recent Orders</h3>
             </div>
             {ORDERS.map(order => (
-              <div key={order.id} className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md shadow-sm">
+              <Card key={order.id} className="p-md">
                 <div className="flex gap-md">
                   <div className="w-20 h-20 bg-surface-container-low rounded-lg flex items-center justify-center p-sm">
                     <img className="w-full h-full object-contain" alt={order.name} src={order.image} />
@@ -72,7 +73,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
                     )}
                   </button>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         )}
@@ -85,7 +86,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
             </div>
             <div className="grid grid-cols-1 gap-md">
               {SAVED_DESIGNS.map(design => (
-                <div key={design.id} className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm group">
+                <Card key={design.id} className="group overflow-hidden">
                   <div className="aspect-square bg-surface-container-low relative">
                     <img className="w-full h-full object-contain p-xl" alt={design.name} src={design.image} />
                     <div className="absolute top-md right-md">
@@ -104,7 +105,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
                       </button>
                     </div>
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
           </div>
@@ -112,7 +113,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
 
         {activeTab === 'profile' && (
           <div className="space-y-md fade-in">
-            <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md space-y-md">
+            <Card className="p-md space-y-md">
               <div className="flex items-center justify-between p-sm hover:bg-surface-container transition-colors rounded-lg cursor-pointer">
                 <div className="flex items-center gap-md">
                   <span className="material-symbols-outlined text-secondary">person_outline</span>
@@ -153,7 +154,7 @@ export default function MobileDashboard({ activeTab, setActiveTab }: MobileDashb
                 </div>
                 <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
               </div>
-            </div>
+            </Card>
             <button className="w-full py-md text-error font-label-md border border-error/30 rounded-xl active:bg-error/5 transition-colors">Sign Out</button>
           </div>
         )}

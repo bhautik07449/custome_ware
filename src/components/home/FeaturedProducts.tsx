@@ -57,7 +57,6 @@ export default function FeaturedProducts() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-grid-gutter">
             {PRODUCTS.slice(0, 4).map((product, i) => {
-              const favorited = isFavorite(product.id);
               return (
                 <TiltCard key={product.id} className={`reveal-up stagger-${i + 1}`}>
                   <div className="group relative bg-surface rounded-2xl overflow-hidden border border-outline-variant/20 shadow-sm hover:shadow-xl transition-shadow duration-300">
@@ -67,19 +66,6 @@ export default function FeaturedProducts() {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         src={product.image}
                       />
-
-                      {/* Favorite Button */}
-                      <button
-                        onClick={e => { e.preventDefault(); toggleFavorite(product.id); }}
-                        className={`absolute top-3 right-3 p-2 bg-surface/90 backdrop-blur rounded-full shadow-md transition-all z-10 ${favorited ? 'opacity-100 scale-100' : 'opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100'} active:scale-90`}
-                      >
-                        <span
-                          className={`material-symbols-outlined text-[20px] transition-colors ${favorited ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}
-                          style={favorited ? { fontVariationSettings: "'FILL' 1" } : {}}
-                        >
-                          favorite
-                        </span>
-                      </button>
 
                       {/* Price badge */}
                       <div className="absolute top-3 left-3 bg-surface/95 backdrop-blur-sm px-sm py-xs rounded-full text-label-sm font-bold shadow-sm border border-outline-variant/30">

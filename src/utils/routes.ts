@@ -16,6 +16,14 @@ export const PATHS = {
   SIGNUP: `/${encodePath('signup')}`,
   LOGIN: `/${encodePath('login')}`,
   FAVORITES: `/${encodePath('favorites')}`,
+  COLLECTIONS: `/${encodePath('collections')}`,
+  TEMPLATES: `/${encodePath('templates')}`,
+  TERMS: `/${encodePath('terms')}`,
+  PRIVACY: `/${encodePath('privacy')}`,
+  SUPPORT: `/${encodePath('support')}`,
+  CONTACT: `/${encodePath('contact')}`,
+  SHIPPING: `/${encodePath('shipping')}`,
+  REFUNDS: `/${encodePath('refunds')}`,
 };
 
 // Helper to generate dynamic product links

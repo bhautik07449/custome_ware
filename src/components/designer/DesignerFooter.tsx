@@ -1,6 +1,8 @@
 import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 import { useDesigner, FABRIC_COLORS } from '../../context/DesignerContext';
+import TShirtSVG from './TShirtSVG';
+
 
 type MobileTabId = 'Upload' | 'Text' | 'Shapes' | 'Emojis' | 'Layers' | 'Saved';
 
@@ -81,24 +83,8 @@ export default function DesignerFooter() {
         <div className="max-w-7xl mx-auto px-grid-margin py-md flex items-center justify-between gap-4">
           {/* Left: product info */}
           <div className="flex items-center gap-lg">
-            <div className="w-14 h-14 bg-surface-container rounded-xl border border-outline-variant flex items-center justify-center overflow-hidden relative shadow-sm">
-              <div
-                className="absolute inset-0 z-0"
-                style={{
-                  backgroundColor: product.color,
-                  mixBlendMode: 'multiply',
-                  opacity: 0.85,
-                  WebkitMaskImage: 'url(https://lh3.googleusercontent.com/aida-public/AB6AXuAkFzQLGXH359AdlyMrQnZMrM78nZnNL53kebz61twzrno4Hv2UD94kfpjZqbQb2HeLRbcDnsUVqve_uHPbpA2dqwL6c7g7hkSCLyKVRzEbBN08hoXehr9mXfAqW5w3UVLE5VDM0qoHHEOsSJgmnJdUHMo0G6Yi6oJhAE_ZKf6riSt3_ADU3HftMQa-uTwNlNoUC9rSyR5p_2YGO1VsIZ3D8mtiSnQJFCVl0fV27RtWua9QOq3IdZ5lKg0uu_Ur7spQIcmO9haUqf8)',
-                  WebkitMaskSize: 'contain',
-                  WebkitMaskPosition: 'center',
-                  WebkitMaskRepeat: 'no-repeat',
-                }}
-              />
-              <img
-                className="w-full h-full object-contain z-10"
-                alt="Thumbnail"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkFzQLGXH359AdlyMrQnZMrM78nZnNL53kebz61twzrno4Hv2UD94kfpjZqbQb2HeLRbcDnsUVqve_uHPbpA2dqwL6c7g7hkSCLyKVRzEbBN08hoXehr9mXfAqW5w3UVLE5VDM0qoHHEOsSJgmnJdUHMo0G6Yi6oJhAE_ZKf6riSt3_ADU3HftMQa-uTwNlNoUC9rSyR5p_2YGO1VsIZ3D8mtiSnQJFCVl0fV27RtWua9QOq3IdZ5lKg0uu_Ur7spQIcmO9haUqf8"
-              />
+            <div className="w-14 h-14 bg-surface-container rounded-xl border border-outline-variant flex items-center justify-center overflow-hidden relative shadow-sm p-1">
+              <TShirtSVG color={product.color} style={product.style} className="w-full h-full" />
             </div>
             <div>
               <h3 className="font-bold text-[16px] text-on-surface leading-tight">Custom {product.style}</h3>

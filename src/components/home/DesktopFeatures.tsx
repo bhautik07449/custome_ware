@@ -1,3 +1,5 @@
+import { Card } from '../ui/Card';
+
 const FEATURES = [
   {
     icon: 'palette',
@@ -39,16 +41,17 @@ export default function DesktopFeatures() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
           {FEATURES.map((f, i) => (
-            <div
+            <Card
               key={f.title}
-              className={`bento-item bg-gradient-to-br ${f.gradient} bg-surface p-xl rounded-2xl border border-outline-variant/30 flex flex-col gap-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 reveal-up stagger-${i + 1} cursor-default`}
+              interactive
+              className={`bento-item bg-gradient-to-br ${f.gradient} bg-surface p-xl rounded-2xl flex flex-col gap-md reveal-up stagger-${i + 1} cursor-default`}
             >
               <div className={`w-12 h-12 rounded-xl ${f.iconBg} flex items-center justify-center`}>
                 <span className="material-symbols-outlined text-[22px]">{f.icon}</span>
               </div>
               <h3 className="font-headline-md text-headline-md">{f.title}</h3>
               <p className="text-on-surface-variant font-body-md text-sm">{f.desc}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

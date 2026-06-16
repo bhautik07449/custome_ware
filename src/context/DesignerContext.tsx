@@ -47,6 +47,16 @@ export const FABRIC_COLORS = [
 
 export const FONTS = ['Inter', 'Playfair Display', 'Roboto Mono', 'Caveat Brush', 'Georgia', 'Arial Black'];
 
+export const SHIRT_STYLES = [
+  { id: 'Classic Crew', label: 'Classic Crew',  desc: 'Round neck · Regular fit' },
+  { id: 'V-Neck',       label: 'V-Neck',         desc: 'Deep V · Slim fit'       },
+  { id: 'Long Sleeve',  label: 'Long Sleeve',    desc: 'Full sleeve · Regular'    },
+  { id: 'Oversized',    label: 'Oversized',       desc: 'Drop shoulder · Boxy'    },
+  { id: 'Polo',         label: 'Polo',            desc: 'Collar · Button placket' },
+  { id: 'Tank Top',     label: 'Tank Top',        desc: 'Sleeveless · Athletic'   },
+];
+
+
 export const SHAPES = [
   { id: 'circle',    label: 'Circle',    path: 'M 50 10 A 40 40 0 1 0 50.001 10 Z' },
   { id: 'rect',      label: 'Rectangle', path: 'M 5 5 H 95 V 95 H 5 Z' },
@@ -393,18 +403,158 @@ export function DesignerProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // ── Download ──
+  // ── Download — native Canvas 2D (no html2canvas, no CORS issues) ──
   const handleDownload = useCallback(async () => {
-    const { default: html2canvas } = await import('html2canvas');
-    const isMobile = window.innerWidth < 768;
-    const el = document.getElementById(isMobile ? 'tshirt-canvas-mobile' : 'tshirt-canvas-desktop');
-    if (!el) return;
-    const canvas = await html2canvas(el, { backgroundColor: null, useCORS: true, scale: 2 });
+    // Import path helpers from TShirtSVG (matches new 500×560 viewBox)
+    const { getTShirtPath, getCollarPath, getDesignAreaFraction } = await import('../components/designer/TShirtSVG');
+
+    // Canvas dimensions: 500×560 viewBox scaled 3× for high-DPI export
+    const SCALE = 3;
+    const VB_W = 500;
+    const VB_H = 560;
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width  = VB_W * SCALE;
+    offscreen.height = VB_H * SCALE;
+    const ctx = offscreen.getContext('2d');
+    if (!ctx) return;
+
+    ctx.scale(SCALE, SCALE);
+
+    // ── 1. Shirt body ─────────────────────────────────────────────────────────
+    const shirtPath = new Path2D(getTShirtPath(product.style));
+
+    // Drop shadow
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.32)';
+    ctx.shadowBlur = 18;
+    ctx.shadowOffsetY = 12;
+    ctx.fillStyle = product.color;
+    ctx.fill(shirtPath);
+    ctx.restore();
+
+    // Body shading gradient
+    const bodyGrad = ctx.createLinearGradient(VB_W * 0.15, 0, VB_W * 0.85, VB_H);
+    bodyGrad.addColorStop(0,    'rgba(255,255,255,0.24)');
+    bodyGrad.addColorStop(0.25, 'rgba(255,255,255,0.10)');
+    bodyGrad.addColorStop(0.65, 'rgba(0,0,0,0.03)');
+    bodyGrad.addColorStop(1,    'rgba(0,0,0,0.20)');
+    ctx.save();
+    ctx.fillStyle = bodyGrad;
+    ctx.fill(shirtPath);
+    ctx.restore();
+
+    // Shirt outline
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,0,0,0.22)';
+    ctx.lineWidth = 1.8;
+    ctx.lineJoin = 'round';
+    ctx.stroke(shirtPath);
+    ctx.restore();
+
+    // Collar rib band
+    const collarPath = new Path2D(getCollarPath(product.style));
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,0,0,0.26)';
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'round';
+    ctx.stroke(collarPath);
+    ctx.restore();
+    ctx.save();
+    ctx.strokeStyle = product.color;
+    ctx.globalAlpha = 0.82;
+    ctx.lineWidth = 4.5;
+    ctx.lineCap = 'round';
+    ctx.stroke(collarPath);
+    ctx.restore();
+
+    // ── 2. Design layers ──────────────────────────────────────────────────────
+    const da = getDesignAreaFraction();
+    const DA_LEFT = VB_W * da.left;
+    const DA_TOP  = VB_H * da.top;
+    const DA_W    = VB_W * da.width;
+    const DA_H    = VB_H * da.height;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(DA_LEFT, DA_TOP, DA_W, DA_H);
+    ctx.clip();
+
+    const visibleLayers = layers.filter(l => l.visible && l.side === activeSide);
+
+    for (const layer of visibleLayers) {
+      const lx  = DA_LEFT + (layer.x / 100) * DA_W;
+      const ly  = DA_TOP  + (layer.y / 100) * DA_H;
+      const lw  = (layer.width  / 100) * DA_W;
+      const lh  = (layer.height / 100) * DA_H;
+      const cx  = lx + lw / 2;
+      const cyc = ly + lh / 2;
+
+      ctx.save();
+      ctx.globalAlpha = (layer.opacity ?? 100) / 100;
+
+      if (layer.rotation) {
+        ctx.translate(cx, cyc);
+        ctx.rotate((layer.rotation * Math.PI) / 180);
+        ctx.translate(-cx, -cyc);
+      }
+
+      if (layer.type === 'text') {
+        const fs = layer.fontSize ?? 32;
+        ctx.font = `bold ${fs}px "${layer.fontFamily ?? 'Inter'}", sans-serif`;
+        ctx.fillStyle = layer.color ?? '#000000';
+        ctx.textAlign  = (layer.textAlign as CanvasTextAlign) ?? 'center';
+        ctx.textBaseline = 'middle';
+        if (layer.letterSpacing) {
+          const chars = Array.from(layer.content);
+          let startX = cx - ctx.measureText(layer.content).width / 2;
+          for (const ch of chars) {
+            ctx.fillText(ch, startX, cyc);
+            startX += ctx.measureText(ch).width + (layer.letterSpacing ?? 0);
+          }
+        } else {
+          ctx.fillText(layer.content, cx, cyc);
+        }
+      } else if (layer.type === 'image') {
+        try {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => resolve();
+            img.onerror = () => reject();
+            img.src = layer.content;
+          });
+          ctx.drawImage(img, lx, ly, lw, lh);
+        } catch {
+          ctx.fillStyle = 'rgba(100,100,100,0.2)';
+          ctx.fillRect(lx, ly, lw, lh);
+        }
+      } else if (layer.type === 'shape') {
+        ctx.save();
+        ctx.translate(lx, ly);
+        ctx.scale(lw / 100, lh / 100);
+        ctx.fillStyle = layer.color ?? '#3b82f6';
+        ctx.fill(new Path2D(layer.content));
+        ctx.restore();
+      } else if (layer.type === 'emoji') {
+        ctx.font = `${layer.fontSize ?? 48}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(layer.content, cx, cyc);
+      }
+
+      ctx.restore();
+    }
+
+    ctx.restore(); // end clip
+
+    // ── 3. Download ───────────────────────────────────────────────────────────
     const link = document.createElement('a');
     link.download = `custom-tshirt-${activeSide}-${Date.now()}.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.href = offscreen.toDataURL('image/png');
     link.click();
-  }, [activeSide]);
+  }, [activeSide, layers, product]);
+
 
   const value: DesignerContextType = {
     activeTab, setActiveTab,

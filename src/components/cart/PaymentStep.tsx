@@ -1,3 +1,5 @@
+import { Card } from '../ui/Card';
+
 export default function PaymentStep() {
   return (
     <section className="step-content space-y-lg md:space-y-xl fade-in">
@@ -26,7 +28,7 @@ export default function PaymentStep() {
           <div className="relative flex justify-center"><span className="bg-surface px-md text-on-surface-variant text-sm font-label-md">Or pay with card</span></div>
         </div>
 
-        <div className="bg-surface-container-lowest md:bg-surface-container-low border border-outline-variant/30 md:border-none rounded-2xl p-md md:p-xl space-y-lg shadow-sm md:shadow-none">
+        <Card variant="flat" className="bg-surface-container-lowest md:bg-surface-container-low border-outline-variant/30 md:border-none rounded-2xl p-md md:p-xl space-y-lg md:shadow-none">
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-label-md text-on-surface">Cardholder Name</label>
             <input className="bg-surface-container-lowest border-2 border-outline-variant rounded-xl p-md focus:border-secondary focus:ring-0 transition-all outline-none" placeholder="John Doe" type="text" />
@@ -48,7 +50,7 @@ export default function PaymentStep() {
               <input className="bg-surface-container-lowest border-2 border-outline-variant rounded-xl p-md focus:border-secondary focus:ring-0 transition-all outline-none" placeholder="***" type="password" />
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </section>
   );

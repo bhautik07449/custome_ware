@@ -1,3 +1,5 @@
+import { Card } from '../ui/Card';
+
 interface OrderSummaryProps {
   currentStep: number;
   nextStep: () => void;
@@ -8,7 +10,7 @@ interface OrderSummaryProps {
 export default function OrderSummary({ currentStep, nextStep, prevStep, getNextButtonText }: OrderSummaryProps) {
   return (
     <aside className="hidden md:block w-[400px] flex-shrink-0">
-      <div className="sticky top-[100px] bg-surface-container-low rounded-2xl p-xl border border-outline-variant space-y-xl">
+      <Card variant="flat" className="sticky top-[100px] rounded-2xl p-xl space-y-xl">
         <h2 className="font-headline-md text-headline-md text-on-surface">Order Summary</h2>
         <div className="space-y-md border-b border-outline-variant pb-xl">
           <div className="flex justify-between font-body-md text-on-surface-variant">
@@ -53,7 +55,7 @@ export default function OrderSummary({ currentStep, nextStep, prevStep, getNextB
           <span className="material-symbols-outlined text-md">lock</span>
           <span className="font-label-sm text-label-sm uppercase tracking-widest">Secure Checkout</span>
         </div>
-      </div>
+      </Card>
     </aside>
   );
 }

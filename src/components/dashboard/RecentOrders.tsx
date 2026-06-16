@@ -1,4 +1,5 @@
 import { ORDERS } from '../../data/mockData';
+import { Card } from '../ui/Card';
 
 export default function RecentOrders() {
   return (
@@ -7,7 +8,7 @@ export default function RecentOrders() {
         <h2 className="font-headline-md text-headline-md text-on-surface">Recent Orders</h2>
         <a className="font-label-md text-label-md text-secondary hover:underline" href="#">View All</a>
       </div>
-      <div className="overflow-x-auto bg-surface-container-lowest border border-outline-variant/50 rounded-xl">
+      <Card className="overflow-x-auto border-outline-variant/50 p-0">
         <table className="w-full text-left min-w-[700px]">
           <thead>
             <tr className="bg-surface-container-low border-b border-outline-variant/30">
@@ -40,7 +41,7 @@ export default function RecentOrders() {
             ))}
           </tbody>
         </table>
-      </div>
+      </Card>
     </section>
   );
 }

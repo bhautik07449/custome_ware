@@ -1,6 +1,7 @@
 import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
 import { SAVED_DESIGNS } from '../../data/mockData';
+import { Card } from '../ui/Card';
 
 export default function SavedDesigns() {
   return (
@@ -14,7 +15,7 @@ export default function SavedDesigns() {
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-grid-gutter">
         {SAVED_DESIGNS.map(design => (
-          <div key={design.id} className="group relative bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-hidden hover:shadow-lg transition-all">
+          <Card key={design.id} variant="flat" interactive className="group relative p-0">
             <div className="aspect-square bg-white flex items-center justify-center p-md">
               <img className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt={design.name} src={design.image} />
             </div>
@@ -30,7 +31,7 @@ export default function SavedDesigns() {
                 <span className="material-symbols-outlined">shopping_cart</span>
               </button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </section>

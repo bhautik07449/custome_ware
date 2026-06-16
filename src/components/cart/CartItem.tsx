@@ -1,3 +1,5 @@
+import { Card } from '../ui/Card';
+
 export interface CartItemType {
   id: string | number;
   name: string;
@@ -15,7 +17,7 @@ interface CartItemProps {
 
 export default function CartItem({ item }: CartItemProps) {
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md flex flex-row gap-md sm:gap-lg hover:shadow-lg hover:shadow-on-surface/5 transition-all duration-300 shadow-sm md:shadow-none">
+    <Card interactive className="p-md flex flex-row gap-md sm:gap-lg md:shadow-none">
       <div className="w-24 sm:w-32 h-24 sm:h-32 bg-surface-container-low rounded-lg flex-shrink-0 relative overflow-hidden">
         <img className="w-full h-full object-cover" alt={item.name} src={item.image} />
         {item.isCustom && <div className="absolute top-1 right-1 bg-secondary/90 text-on-secondary px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Custom</div>}
@@ -41,6 +43,6 @@ export default function CartItem({ item }: CartItemProps) {
           </button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

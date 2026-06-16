@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useDesigner, FABRIC_COLORS, SHAPES, EMOJIS } from '../../context/DesignerContext';
+import { useDesigner, FABRIC_COLORS, SHAPES, EMOJIS, SHIRT_STYLES } from '../../context/DesignerContext';
+import TShirtSVG from './TShirtSVG';
 
 type TabName = 'Upload' | 'Text' | 'Shapes' | 'Emojis' | 'Layers' | 'Saved';
 
@@ -36,18 +37,28 @@ export default function DesignerSidebar() {
           <div className="p-md space-y-lg">
             <div>
               <span className="font-label-md text-on-surface mb-md block">T-shirt Styles</span>
-              <div className="grid grid-cols-2 gap-sm">
-                {[
-                  { style: 'Classic Crew', src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDxK4y3yRFiANyp4lfIv8PdacSczx69-xXAS-nPRUZMIG9oijTv-xEuppCmBt7eADyXcfgaTTuu8ifUnHO5FkEsEJQI0eAJR9suux9sToR0DQ0ZeiZyd2RWRmMMGVQp73j05X-o18l0NWGWxbyRzZtlvX1_LaNP88vaFJCRaxJKE84j7gIC4aArT71gkHFOaFV6phImydVb0UTM-6T6OpCUc_4KyI22W7vQt9w1roa353VUu9BAMW8J1ru97rRe7HWvMHs9hm4qQhQ' },
-                  { style: 'Heavyweight', src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCe2QM45lKC7JSseGKCcRn-PD0UBjixpdJOm-y5Ksgs3XkWNmaQyeVqaU5hXkiaRDUgXwFPNYgs7VIod1N0uILLpD3lVw2ERDN-q4A15ujxIBfaN4IhptcRq779hFVxPrvqDWEYxNDX__jT1n40tomTmMWqO4L1AewutZcE3IpoiulfXUvNtCkJbnvNso40cZciKXJC9pslNZZ-Hl-OvG7Xp2beFnU8Cs0vHhhvfs48prZy0DYJ09SJYR1lPVp2MFtAQMxULK0hJcg' },
-                ].map(s => (
+              {/* 3 × 2 grid: 6 styles */}
+              <div className="grid grid-cols-3 gap-xs">
+                {SHIRT_STYLES.map(({ id, label, desc }) => (
                   <div
-                    key={s.style}
-                    onClick={() => setProduct({ ...product, style: s.style })}
-                    className={`border-2 rounded-xl p-sm bg-surface overflow-hidden cursor-pointer transition-all ${product.style === s.style ? 'border-secondary shadow-md shadow-secondary/20' : 'border-transparent hover:border-outline-variant'}`}
+                    key={id}
+                    onClick={() => setProduct({ ...product, style: id })}
+                    className={`relative flex flex-col items-center border-2 rounded-xl p-xs bg-surface cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                      product.style === id
+                        ? 'border-secondary shadow-md shadow-secondary/20 bg-secondary/5'
+                        : 'border-transparent hover:border-outline-variant/60'
+                    }`}
                   >
-                    <img className="w-full aspect-square object-cover rounded-lg" alt={s.style} src={s.src} />
-                    <span className="text-label-sm mt-xs block text-center font-medium">{s.style}</span>
+                    {product.style === id && (
+                      <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-secondary shadow-sm" />
+                    )}
+                    <div className="w-full aspect-[5/6] rounded-lg bg-surface-container/60 flex items-center justify-center p-1 mb-xs overflow-hidden">
+                      <TShirtSVG color={product.color} style={id} thumbnail className="w-full h-full" />
+                    </div>
+                    <span className={`text-[10px] font-bold text-center leading-tight mb-[1px] ${
+                      product.style === id ? 'text-secondary' : 'text-on-surface'
+                    }`}>{label}</span>
+                    <span className="text-[9px] text-on-surface-variant text-center leading-tight opacity-75 hidden xl:block">{desc}</span>
                   </div>
                 ))}
               </div>

@@ -2,12 +2,17 @@ import { Link } from 'react-router-dom';
 import { PATHS, getProductLink } from '../utils/routes';
 import type { Product } from '../data/mockData';
 import { useFavorites } from '../context/FavoritesContext';
+import { Card } from './ui/Card';
 
 export default function ProductCard({ product }: { product: Product }) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const favorited = isFavorite(product.id);
   return (
-    <div className="product-card group relative bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden flex flex-col transition-all duration-300 md:hover:shadow-lg shadow-sm md:shadow-none md:hover:-translate-y-1 active:scale-[0.98] md:active:scale-100">
+    <Card 
+      variant="default" 
+      interactive 
+      className="product-card group relative flex flex-col md:shadow-none md:active:scale-100"
+    >
       <Link to={getProductLink(product.id)} className="relative aspect-[3/4] bg-[#F9FAFB] overflow-hidden block">
         <img alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src={product.image} />
 
@@ -86,6 +91,6 @@ export default function ProductCard({ product }: { product: Product }) {
           Customize
         </Link>
       </div>
-    </div>
+    </Card>
   );
 }

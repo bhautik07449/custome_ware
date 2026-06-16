@@ -1,5 +1,6 @@
 import { CART_ITEMS, UPSELL_ITEMS } from '../../data/mockData';
 import CartItem from './CartItem';
+import { Card } from '../ui/Card';
 
 export default function CartItemsStep() {
   return (
@@ -22,13 +23,13 @@ export default function CartItemsStep() {
         <h4 className="font-label-md text-label-md text-on-surface mb-md">Complete your kit</h4>
         <div className="flex gap-md overflow-x-auto hide-scrollbar pb-md -mx-md px-md">
           {UPSELL_ITEMS.map((item) => (
-            <div key={item.id} className="bg-surface-container-high rounded-xl p-md min-w-[140px] flex flex-col gap-sm flex-shrink-0">
+            <Card key={item.id} variant="flat" className="p-md min-w-[140px] flex flex-col gap-sm flex-shrink-0">
               <div className="w-full aspect-square bg-surface-container-lowest rounded-lg overflow-hidden border border-outline-variant/20">
                 <img className="w-full h-full object-cover" alt={item.name} src={item.image} />
               </div>
               <span className="font-label-sm text-label-sm text-on-surface block truncate">{item.name}</span>
               <span className="font-label-sm text-label-sm font-bold">${item.price.toFixed(2)}</span>
-            </div>
+            </Card>
           ))}
         </div>
       </section>

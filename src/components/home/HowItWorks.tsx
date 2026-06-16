@@ -1,5 +1,6 @@
 import { PATHS } from '../../utils/routes';
 import { Link } from 'react-router-dom';
+import { Card } from '../ui/Card';
 
 const steps = [
   {
@@ -92,9 +93,9 @@ export default function HowItWorks() {
         <h2 className="font-headline-md text-headline-md mb-xl text-center reveal-up">How It Works</h2>
         <div className="flex flex-col gap-md">
           {steps.map((step, i) => (
-            <div
+            <Card
               key={step.num}
-              className={`bg-surface p-xl rounded-2xl border border-outline-variant/20 flex items-start gap-md reveal-up stagger-${i + 1}`}
+              className={`bg-surface p-xl rounded-2xl border-outline-variant/20 flex items-start gap-md reveal-up stagger-${i + 1}`}
             >
               <div className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-md`}>
                 <span className="material-symbols-outlined text-white text-[20px]">{step.icon}</span>
@@ -104,7 +105,7 @@ export default function HowItWorks() {
                 <h3 className="font-headline-md text-[18px] font-bold mb-xs">{step.title}</h3>
                 <p className="font-body-md text-body-md text-on-surface-variant text-sm">{step.desc}</p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
