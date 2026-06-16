@@ -6,7 +6,7 @@ import ScrollToTop from './components/ScrollToTop';
 function App() {
   return (
     <FavoritesProvider>
-      <Router>
+      <Router> 
         <ScrollToTop />
         <AppRoutes />
       </Router>
