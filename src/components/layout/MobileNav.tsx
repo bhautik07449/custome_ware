@@ -5,6 +5,7 @@ import { useFavorites } from '../../context/FavoritesContext';
 export default function MobileNav() {
   const location = useLocation();
   const { favorites } = useFavorites();
+  const showDesigner = false; // Toggle this to true to show the Designer link, false to hide it
 
   return (
     <div className="fixed bottom-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-t border-outline-variant/30 px-md py-sm flex justify-around items-center md:hidden pb-safe">
@@ -16,10 +17,12 @@ export default function MobileNav() {
         <span className="material-symbols-outlined" style={location.pathname.startsWith(PATHS.SHOP) ? { fontVariationSettings: "'FILL' 1" } : {}}>storefront</span>
         <span className="font-label-sm text-label-sm">Shop</span>
       </Link>
-      <Link to={PATHS.DESIGNER} className={`flex flex-col items-center gap-xs ${location.pathname.startsWith(PATHS.DESIGNER) ? 'text-secondary font-bold' : 'text-on-surface-variant hover:text-secondary'}`}>
-        <span className="material-symbols-outlined" style={location.pathname.startsWith(PATHS.DESIGNER) ? { fontVariationSettings: "'FILL' 1" } : {}}>brush</span>
-        <span className="font-label-sm text-label-sm">Designer</span>
-      </Link>
+      {showDesigner && (
+        <Link to={PATHS.DESIGNER} className={`flex flex-col items-center gap-xs ${location.pathname.startsWith(PATHS.DESIGNER) ? 'text-secondary font-bold' : 'text-on-surface-variant hover:text-secondary'}`}>
+          <span className="material-symbols-outlined" style={location.pathname.startsWith(PATHS.DESIGNER) ? { fontVariationSettings: "'FILL' 1" } : {}}>brush</span>
+          <span className="font-label-sm text-label-sm">Designer</span>
+        </Link>
+      )}
       <Link to={PATHS.DASHBOARD} className={`flex flex-col items-center gap-xs ${location.pathname.startsWith(PATHS.DASHBOARD) ? 'text-secondary font-bold' : 'text-on-surface-variant hover:text-secondary'}`}>
         <span className="material-symbols-outlined" style={location.pathname.startsWith(PATHS.DASHBOARD) ? { fontVariationSettings: "'FILL' 1" } : {}}>person</span>
         <span className="font-label-sm text-label-sm">Profile</span>

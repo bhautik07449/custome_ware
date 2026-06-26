@@ -12,6 +12,7 @@ export default function Header({ scrolled }: HeaderProps) {
   const { favorites } = useFavorites();
 
   const isLoggedIn = false;
+  const showDesigner = false; // Toggle this to true to show the Designer link, false to hide it
 
   const isActive = (path: string) => currentPath.startsWith(path) && path !== PATHS.HOME || (path === PATHS.HOME && currentPath === PATHS.HOME);
 
@@ -27,12 +28,14 @@ export default function Header({ scrolled }: HeaderProps) {
             >
               Shop
             </Link>
-            <Link
-              className={`font-body-md text-body-md transition-colors duration-200 ${isActive(PATHS.DESIGNER) ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary'}`}
-              to={PATHS.DESIGNER}
-            >
-              Designer
-            </Link>
+            {showDesigner && (
+              <Link
+                className={`font-body-md text-body-md transition-colors duration-200 ${isActive(PATHS.DESIGNER) ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary'}`}
+                to={PATHS.DESIGNER}
+              >
+                Designer
+              </Link>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-md">
