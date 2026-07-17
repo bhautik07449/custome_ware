@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset & Base */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -11,7 +18,68 @@ html, body, #root {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f9f9f9;
+  color: #1a1c1c;
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* Selection */
+::selection {
+  background: #D4AF37;
+  color: white;
+}
+
+/* Scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Bottom Sheet */
+.bottom-sheet {
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+/* Product Card Interactions */
+.product-card-hover:hover {
+  box-shadow: none !important;
+  outline: 1px solid #000000;
+}
+
+/* Reveal on hover animation */
+.reveal-on-hover {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+.group:hover .reveal-on-hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Luxury subtle shadow */
+.luxury-shadow {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
 }
