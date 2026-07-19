@@ -1,70 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 
 const products = [
-  {
-    id: 1,
-    name: 'EMBROIDERED HEAVY HOODIE',
-    price: '$185.00',
-    colors: ['#000000', '#ffffff'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD2dCi2biye7oNB5vyVBcdO9v5HTmxVh-NPQc0Grcxift04NmSMTAwh1H5CJGntt8ibHDpSAP_AvdA5pkgbmcpGmf1K8qZGc5fcpk4iYp3e3drz5EJK0_og7R6-7mEQlkLGWhhE7DLpmG8EZiQ4f9uKOxroytEk3L0TOpem9U5ImpLiGuMF3qUVgl7AAhuBXE8suGZkaUvWdS9OKzc43iugaCWcmF1dnxyNnZxLeoBFTOLPVXs42ft0',
-  },
-  {
-    id: 2,
-    name: 'STRUCTURED WOOL OVERCOAT',
-    price: '$420.00',
-    colors: ['#f5f5dc'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuC_YIYl7IRsj2ChUqUvb2XLgJnvthbo_IK0OErSe6SNNUFObJP2JoswM6Vu-6BbXIBUpmickHDSNs3k0Deqtn2Rd2H2uYuo0TvbQ_ch81Q7TcEe2GAdj97uhPrdBEPRDCErDDMhNpQrbgp5znRD-sTjq4jDVGFeovunyNz_tBbYdNq0l0dJeqi6RfqLXJ8qpkW8JNx7AtjHNl--zdjScXISRBFYcnGBIopm6TJjxAPhxl7JDtVMS_QK',
-  },
-  {
-    id: 3,
-    name: 'ARCHITECTURAL DENIM',
-    price: '$210.00',
-    colors: ['#000000', '#303030'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBMUpVSEnrYVQaJZqAJdaO4cB3BtpJmq6bjJ7MXaqVyVNvltCP-rt95j9p1wEKz3TtO6_19NA_zRsI7S06SYWDcHhkXBw3F7bH2RbCOt50CuKmyrsCluGhxkogkI3jrlHimz18r-TN4iZOFGzijJJlQvrYA-gJxR-1kl6npO8J9IZh6iISui5PFPNAY5Vhpke-4FrNC_k8QqIXDI7Xu6xc0bjgzKd-aDGPQY0nzvngjJciztqzeY-ps',
-  },
-  {
-    id: 4,
-    name: 'SIGNATURE LEATHER TOTE',
-    price: '$350.00',
-    colors: ['#000000'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAyUYFkY8-r4LaJReKFTNejQmnsQ9z6ZaSdzUrwtfGX_yjUi2KVSQfQJNmtixji0d9Spal1_t9vilH58c22G-sDdeaYwkPyR5Fp36K1tS5iMVab2MLhQZHClU1HkMru_02c7jYXQetyite0NhnSTPvjJRuDaKDc1_REqn8NEhKCRCIgvWIWY6wJiduxNlGXp-zJcLoR5tYqRUuMO7TRS8xQ3JgwKkrMtWNmdEOyaawlwQ6UrRJ_54G2',
-  },
-  {
-    id: 5,
-    name: 'HEAVYWEIGHT BOX TEE',
-    price: '$85.00',
-    colors: ['#000000', '#ffffff'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDv2zZbO-x1_g1l53KKcefkGaGw87c7aILUW0Io1NCZ07V60qU6oRdP8OWe3mRkLM7K4FUIRxI1yQg7B6ck96oD9SME1saRPWG6h7qqiO9A2KcCH8azAtORcBBxRP4llVQ12xjc5Xf_F4j0Q6WRF286Z7wQkw_hsmoeIaNUG6_-H01AoEFeumWvqrj6Z82yDtXn3mzw2RuL-eKg5W4j5NFja9Q4_hTzqiRNIVPKaDSDVTUNzabC6LZT',
-  },
-  {
-    id: 6,
-    name: 'STRUCTURAL CARGO PANT',
-    price: '$195.00',
-    colors: ['#303030'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBw3FIgU5dcETRMEZWgqA7w1zCNp9TdlPmwwJXLl3T3FGZPaGOmS85VKSUK9KPDDCRmIaOOZv5LGzLoRFU0poQdNIDFjcWEBAYUjLZPnAE-kf_vbtMRyu40vrO4xffSm9w77TQOJDnR1423lnqjyletGpjS2yzpHRQLjCJO-pZIobvgvLg3V3xBylbZX1l2sJQGh7zruQu-SYbnMbensYu-UVqunR9VXbKTfIiZevM28KLoghTguxxg',
-  },
-  {
-    id: 7,
-    name: 'WASHED SAND HOODIE',
-    price: '$140.00',
-    colors: ['#f5f5dc'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBz-nelyzocnEn3JLA6eooxfgYUU7PFlLmfI0qMRgTV9IyhNXlihKDMWstctv1cn6OoVKFAJ8PYBvZmXoO5QCgvMG-Dg6Bk0PNH2ZduLaMOLTaCRtgXy9KqNsvP2054cqc2saguzoD5e22maV_50BkFKKI133iv2WjBzsLVXjnObOyyswk2EIlB22RtXpAV0SMhGKD_Pe9_cE36hHaoRVjfBnldn9ELjh_HvcnWHyOSnV2DnHCvwuQs',
-  },
-  {
-    id: 8,
-    name: 'PEBBLED LEATHER CROSSBODY',
-    price: '$210.00',
-    colors: ['#000000'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAKcxmVagT-mf7zNCRrsJR_ol7OtRxOazOKnhZp8K4xo_KSPEqi5f8ob4TibXChoaTlvodPslf6e4aP11kZ6mWMKWRyTwZwYUT2PzR7-zIlffukhV96tI5ckfQnjWk482DbQvfYkX3CjwtVQxtdSftfZPUt_4RhprjcbacTL1XUWzGcwqa4Jpmn5gnO4PsFS7SV4iRU1K0U2dn1PK8IJoTm4AVFxVGIs6mGbioH2CoyukuSNbbelVoG',
-  },
+  { id: 1, name: 'EMBROIDERED HEAVY HOODIE', price: '$185.00', colors: ['#000000', '#ffffff'], image: '/product_embroidered_hoodie.png' },
+  { id: 2, name: 'STRUCTURED WOOL OVERCOAT', price: '$420.00', colors: ['#f5f5dc'], image: '/product_wool_coat.png' },
+  { id: 3, name: 'ARCHITECTURAL DENIM', price: '$210.00', colors: ['#000000', '#303030'], image: '/product_denim.png' },
+  { id: 4, name: 'SIGNATURE LEATHER TOTE', price: '$350.00', colors: ['#000000'], image: '/product_crossbody.png' },
+  { id: 5, name: 'HEAVYWEIGHT BOX TEE', price: '$85.00', colors: ['#000000', '#ffffff'], image: '/product_tee.png' },
+  { id: 6, name: 'STRUCTURAL CARGO PANT', price: '$195.00', colors: ['#303030'], image: '/product_trousers.png' },
+  { id: 7, name: 'WASHED SAND HOODIE', price: '$140.00', colors: ['#f5f5dc'], image: '/product_sand_hoodie.png' },
+  { id: 8, name: 'PEBBLED LEATHER CROSSBODY', price: '$210.00', colors: ['#000000'], image: '/product_crossbody.png' },
 ];
 
 const categories = ['OUTERWEAR', 'TOPS', 'BOTTOMS', 'ACCESSORIES'];

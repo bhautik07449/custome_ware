@@ -1,60 +1,129 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
+const navLinks = [
+  { label: 'Shop All', path: '/products' },
+  { label: 'Collections', path: '/shop' },
+  { label: 'About', path: '/about' },
+  { label: 'Journal', path: '/journal' },
+];
 
 export default function TopNav() {
   const location = useLocation();
-  const isShop = location.pathname === '/shop';
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   return (
-    <header
-      className="bg-surface sticky top-0 z-50 border-b border-transparent transition-all duration-300"
-      id="top-nav"
-    >
-      <nav className="flex justify-between items-center px-container-margin py-4 w-full max-w-[1440px] mx-auto">
-        {/* Left Navigation Links */}
-        <div className="hidden md:flex items-center gap-8">
-          <Link
-            to="/"
-            className={`font-label-caps text-label-caps transition-colors duration-300 ${
-              !isShop ? 'text-primary border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary'
-            }`}
-          >
-            Home
-          </Link>
-          <Link
-            to="/shop"
-            className={`font-label-caps text-label-caps transition-colors duration-300 ${
-              isShop ? 'text-primary border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary'
-            }`}
-          >
-            New Arrivals
-          </Link>
-          <a href="#" className="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors duration-300">
-            Archive
-          </a>
+    <>
+      <nav
+        id="top-nav"
+        className={`w-full sticky top-0 z-50 bg-surface transition-shadow duration-300 ${
+          scrolled ? 'shadow-sm' : ''
+        }`}
+      >
+        <div className="flex justify-between items-center px-container-margin py-gutter max-w-[1440px] mx-auto">
+          {/* Left — desktop nav links */}
+          <div className="flex-1 hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`font-label-caps text-label-caps transition-all duration-200 ${
+                    isActive
+                      ? 'text-primary border-b border-primary pb-1'
+                      : 'text-secondary hover:text-primary'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Center — Brand logo */}
+          <div className="flex-none">
+            <Link to="/">
+              <img
+                src="/korzae_logo.png"
+                alt="KORZAE"
+                className="h-14 w-auto object-contain"
+              />
+            </Link>
+          </div>
+
+          {/* Right — icons */}
+          <div className="flex-1 flex justify-end items-center space-x-4 md:space-x-6">
+            <button className="transition-all duration-200 hover:text-primary text-on-background active:scale-90">
+              <span className="material-symbols-outlined">search</span>
+            </button>
+            <button className="transition-all duration-200 hover:text-primary text-on-background active:scale-90 hidden md:block">
+              <span className="material-symbols-outlined">person</span>
+            </button>
+            <button className="transition-all duration-200 hover:text-primary text-on-background active:scale-90 relative">
+              <span className="material-symbols-outlined">shopping_bag</span>
+              <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+                2
+              </span>
+            </button>
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden transition-all duration-200 hover:text-primary text-on-background active:scale-90"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+            >
+              <span className="material-symbols-outlined">
+                {menuOpen ? 'close' : 'menu'}
+              </span>
+            </button>
+          </div>
         </div>
 
-        {/* Brand Logo - Center */}
-        <div className="absolute left-1/2 -translate-x-1/2">
-          <Link to="/">
-            <span className="font-headline-lg text-[28px] leading-none tracking-tighter text-primary font-extrabold uppercase">
-              MONOGRAM
-            </span>
-          </Link>
-        </div>
-
-        {/* Right Icons */}
-        <div className="flex items-center gap-6">
-          <button className="active:scale-95 transition-transform hover:opacity-70 text-primary">
-            <span className="material-symbols-outlined">person</span>
-          </button>
-          <button className="active:scale-95 transition-transform hover:opacity-70 text-primary relative">
-            <span className="material-symbols-outlined">shopping_bag</span>
-            <span className="absolute -top-1 -right-1 bg-tertiary text-[8px] text-white rounded-full w-3 h-3 flex items-center justify-center font-bold">
-              2
-            </span>
-          </button>
+        {/* Mobile Drawer */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-surface border-t border-outline-variant ${
+            menuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="flex flex-col px-container-margin py-6 space-y-6">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`font-label-caps text-label-caps transition-colors duration-200 ${
+                    isActive ? 'text-primary font-bold' : 'text-secondary'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+            <div className="pt-4 border-t border-outline-variant">
+              <Link
+                to="/profile"
+                className="font-label-caps text-label-caps text-secondary flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">person</span>
+                My Account
+              </Link>
+            </div>
+          </div>
         </div>
       </nav>
-    </header>
+    </>
   );
 }

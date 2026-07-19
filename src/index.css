@@ -83,3 +83,46 @@ body {
 .luxury-shadow {
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
 }
+
+/* Hero zoom on hover */
+.hero-zoom:hover > div:first-child {
+  transform: scale(1.05);
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #000; }
+
+/* Text outline utility */
+.text-outline {
+  -webkit-text-stroke: 1px currentColor;
+  color: transparent;
+}
+
+/* Product card — Quick Add slides up on hover */
+.product-card-hover:hover .add-to-bag-btn {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+.add-to-bag-btn {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Reveal on hover utility */
+.reveal-on-hover {
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.group:hover .reveal-on-hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Global scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f9f9f9; }
+::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
