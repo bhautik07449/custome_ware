@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { getProductBySlug, getRelatedProducts } from '../data/products';
 
 export default function ProductDetailPage() {
@@ -42,6 +43,11 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen pb-32 md:pb-0">
+      <Helmet>
+        <title>{product.name} | KORZAE</title>
+        <meta name="description" content={product.description} />
+      </Helmet>
+
       {/* ── Breadcrumb ── */}
       <div className="px-container-margin py-4 max-w-[1440px] mx-auto">
         <nav className="flex items-center gap-2 font-label-caps text-[10px] text-secondary tracking-widest">
@@ -107,10 +113,10 @@ export default function ProductDetailPage() {
           <div className="flex flex-col gap-6">
             {/* Category & SKU */}
             <div className="flex items-center justify-between">
-              <span className="font-label-caps text-[10px] text-secondary tracking-widest">
+              <span className="font-label-caps text-[12px] text-secondary tracking-widest font-bold">
                 {product.category}
               </span>
-              <span className="font-label-caps text-[10px] text-secondary tracking-widest">
+              <span className="font-label-caps text-[12px] text-secondary tracking-widest font-bold">
                 {product.sku}
               </span>
             </div>
@@ -129,8 +135,8 @@ export default function ProductDetailPage() {
 
             {/* Color Selector */}
             <div>
-              <p className="font-label-caps text-label-caps text-secondary tracking-widest mb-3">
-                COLOR: <span className="text-primary">{product.colors[selectedColor].label.toUpperCase()}</span>
+              <p className="font-label-caps text-[14px] text-secondary tracking-widest mb-4">
+                COLOR: <span className="text-primary font-bold">{product.colors[selectedColor].label.toUpperCase()}</span>
               </p>
               <div className="flex gap-3">
                 {product.colors.map((color, i) => (
@@ -151,11 +157,11 @@ export default function ProductDetailPage() {
 
             {/* Size Selector */}
             <div>
-              <div className="flex justify-between items-center mb-3">
-                <p className="font-label-caps text-label-caps text-secondary tracking-widest">
-                  SIZE{selectedSize ? `: ${selectedSize}` : ''}
+              <div className="flex justify-between items-center mb-4">
+                <p className="font-label-caps text-[14px] text-secondary tracking-widest">
+                  SIZE{selectedSize ? `: ` : ''}<span className="text-primary font-bold">{selectedSize || ''}</span>
                 </p>
-                <button className="font-label-caps text-[10px] text-secondary underline hover:text-primary transition-colors">
+                <button className="font-label-caps text-[12px] text-secondary underline hover:text-primary transition-colors">
                   SIZE GUIDE
                 </button>
               </div>
@@ -164,7 +170,7 @@ export default function ProductDetailPage() {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`py-3 border font-label-caps text-[11px] tracking-widest transition-all active:scale-95 ${
+                    className={`py-3 border font-label-caps text-[14px] font-bold tracking-widest transition-all active:scale-95 ${
                       selectedSize === size
                         ? 'border-primary bg-primary text-on-primary'
                         : 'border-outline-variant text-secondary hover:border-primary'
@@ -182,19 +188,19 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Quantity */}
-            <div className="flex items-center gap-4">
-              <p className="font-label-caps text-label-caps text-secondary tracking-widest">QTY</p>
+            <div className="flex items-center gap-4 mt-2">
+              <p className="font-label-caps text-[14px] text-secondary tracking-widest">QTY:</p>
               <div className="flex items-center border border-outline-variant">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 flex items-center justify-center hover:bg-surface-container transition-colors active:scale-90"
+                  className="w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-colors active:scale-90"
                 >
                   <span className="material-symbols-outlined text-[18px]">remove</span>
                 </button>
-                <span className="w-10 text-center font-label-caps text-label-caps">{quantity}</span>
+                <span className="w-12 text-center font-label-caps text-[16px] font-bold">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 flex items-center justify-center hover:bg-surface-container transition-colors active:scale-90"
+                  className="w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-colors active:scale-90"
                 >
                   <span className="material-symbols-outlined text-[18px]">add</span>
                 </button>

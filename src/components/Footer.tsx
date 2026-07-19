@@ -1,8 +1,31 @@
-const footerLinks = {
-  Shop: ['All Products', 'Outerwear', 'Accessories'],
-  Support: ['Shipping', 'Returns', 'Contact'],
-  Social: ['Instagram', 'Twitter'],
-};
+import { Link } from 'react-router-dom';
+
+const footerLinks = [
+  {
+    category: 'Shop',
+    links: [
+      { label: 'All Products', path: '/products' },
+      { label: 'New Arrivals', path: '/products' },
+      { label: 'Best Sellers', path: '/products' }
+    ]
+  },
+  {
+    category: 'About',
+    links: [
+      { label: 'Our Story', path: '/about' },
+      { label: 'Philosophy', path: '/about' },
+      { label: 'Contact', path: '/about' }
+    ]
+  },
+  {
+    category: 'Support',
+    links: [
+      { label: 'Orders', path: '/orders' },
+      { label: 'Shipping', path: '/about' },
+      { label: 'Returns', path: '/about' }
+    ]
+  }
+];
 
 export default function Footer() {
   return (
@@ -27,17 +50,17 @@ export default function Footer() {
 
         {/* Link columns */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-12 md:gap-16">
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category} className="flex flex-col space-y-4">
-              <p className="font-label-caps text-label-caps text-primary mb-2">{category}</p>
-              {links.map((link) => (
-                <a
-                  key={link}
-                  href="#"
+          {footerLinks.map((section) => (
+            <div key={section.category} className="flex flex-col space-y-4">
+              <p className="font-label-caps text-label-caps text-primary mb-2">{section.category}</p>
+              {section.links.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.path}
                   className="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors"
                 >
-                  {link}
-                </a>
+                  {link.label}
+                </Link>
               ))}
             </div>
           ))}

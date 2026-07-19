@@ -6,6 +6,12 @@ import HomePage from '../pages/HomePage';
 import ShopPage from '../pages/ShopPage';
 import ProductsPage from '../pages/ProductsPage';
 import ProductDetailPage from '../pages/ProductDetailPage';
+import CartPage from '../pages/CartPage';
+import CheckoutPage from '../pages/CheckoutPage';
+import ProfilePage from '../pages/ProfilePage';
+import OrderHistoryPage from '../pages/OrderHistoryPage';
+import AboutPage from '../pages/AboutPage';
+import SearchPage from '../pages/SearchPage';
 
 export default function AppRoutes() {
   return (
@@ -16,6 +22,13 @@ export default function AppRoutes() {
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:slug" element={<ProductDetailPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/orders" element={<OrderHistoryPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        
         <Route
           path="*"
           element={

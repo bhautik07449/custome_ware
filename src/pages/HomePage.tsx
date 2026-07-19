@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const newArrivals = [
   {
@@ -101,6 +102,11 @@ export default function HomePage() {
 
   return (
     <main>
+      <Helmet>
+        <title>KORZAE | Architecture of Silence - Premium Streetwear</title>
+        <meta name="description" content="KORZAE is an architectural streetwear brand building garments with purpose, precision, and an unwavering commitment to form." />
+      </Helmet>
+
       {/* ── Hero Section ── */}
       <section className="hero-section reveal-section relative h-[90vh] w-full overflow-hidden flex items-center justify-center transition-all duration-[1000ms] ease-out">
         {/* Background */}

@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { products as allProducts, type Product } from '../data/products';
 
 // ── Extended catalog (cycle existing products for demo pagination feel) ──
@@ -156,6 +157,11 @@ export default function ProductsPage() {
 
   return (
     <div className="bg-background min-h-screen">
+      <Helmet>
+        <title>Shop All Products | KORZAE</title>
+        <meta name="description" content="Browse the full KORZAE collection of heavyweight, structural textiles and modular uniform pieces." />
+      </Helmet>
+
       {/* ── Mobile Filter Sidebar + Backdrop ── */}
       {/* Backdrop */}
       <div
@@ -266,8 +272,15 @@ export default function ProductsPage() {
                   <img
                     src={product.images[0]}
                     alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10"
                   />
+                  {product.images[1] && (
+                    <img
+                      src={product.images[1]}
+                      alt={`${product.name} Alternate`}
+                      className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0"
+                    />
+                  )}
 
                   {/* Quick Add Overlay */}
                   <div className="add-to-bag-btn absolute bottom-0 left-0 right-0 p-4 opacity-0 translate-y-4 transition-all duration-300">
@@ -297,14 +310,14 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Product info */}
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start mt-2">
                   <div>
-                    <h3 className="font-label-caps text-label-caps text-primary">{product.name}</h3>
-                    <p className="font-label-caps text-[10px] text-secondary opacity-60 uppercase mt-0.5">
+                    <h3 className="font-body-md text-[16px] font-bold text-primary">{product.name}</h3>
+                    <p className="font-label-caps text-[12px] text-secondary opacity-80 uppercase mt-1">
                       {product.colors[0].label}
                     </p>
                   </div>
-                  <span className="font-label-caps text-label-caps text-primary">${product.price}</span>
+                  <span className="font-body-md text-[16px] font-bold text-primary">${product.price}</span>
                 </div>
               </Link>
             ))}

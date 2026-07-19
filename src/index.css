@@ -122,7 +122,33 @@ body {
   transform: translateY(0);
 }
 
+/* Improve Image Quality globally */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
 /* Global scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f9f9f9; }
-::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: #cfc4c5; }
+::-webkit-scrollbar-thumb:hover { background: #1b1b1b; }
+
+/* Korzae UI Components */
+.korzae-input {
+  @apply w-full bg-surface-container-low border border-outline-variant py-3 px-4 outline-none transition-all font-body-md;
+}
+.korzae-input:focus {
+  @apply border-primary ring-1 ring-primary;
+}
+
+.korzae-checkbox {
+  @apply appearance-none w-5 h-5 border border-outline-variant rounded-none cursor-pointer flex items-center justify-center transition-all bg-surface-container-low;
+}
+.korzae-checkbox:checked {
+  @apply bg-primary border-primary;
+}
+.korzae-checkbox:checked::after {
+  content: '✓';
+  @apply text-on-primary text-[12px] font-bold block leading-none;
+}

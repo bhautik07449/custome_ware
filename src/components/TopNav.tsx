@@ -65,19 +65,13 @@ export default function TopNav() {
           </div>
 
           {/* Right — icons */}
-          <div className="flex-1 flex justify-end items-center space-x-4 md:space-x-6">
-            <button className="transition-all duration-200 hover:text-primary text-on-background active:scale-90">
-              <span className="material-symbols-outlined">search</span>
-            </button>
-            <button className="transition-all duration-200 hover:text-primary text-on-background active:scale-90 hidden md:block">
-              <span className="material-symbols-outlined">person</span>
-            </button>
-            <button className="transition-all duration-200 hover:text-primary text-on-background active:scale-90 relative">
-              <span className="material-symbols-outlined">shopping_bag</span>
-              <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
-                2
-              </span>
-            </button>
+          <div className="flex-1 flex justify-end gap-6 items-center">
+            <Link to="/search" className="material-symbols-outlined text-[24px] text-primary hover:opacity-70 transition-opacity">search</Link>
+            <Link to="/profile" className="material-symbols-outlined text-[24px] text-primary hover:opacity-70 transition-opacity">person</Link>
+            <Link to="/cart" className="relative group">
+              <span className="material-symbols-outlined text-[24px] text-primary group-hover:opacity-70 transition-opacity">shopping_bag</span>
+              <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
+            </Link>
             {/* Mobile hamburger */}
             <button
               className="md:hidden transition-all duration-200 hover:text-primary text-on-background active:scale-90"

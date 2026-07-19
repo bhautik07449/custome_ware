@@ -2,8 +2,8 @@ import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
   { label: 'HOME', icon: 'home', path: '/' },
-  { label: 'SHOP', icon: 'storefront', path: '/shop' },
-  { label: 'BAG', icon: 'shopping_bag', path: '/bag' },
+  { label: 'SHOP', icon: 'storefront', path: '/products' },
+  { label: 'CART', icon: 'shopping_bag', path: '/cart' },
   { label: 'PROFILE', icon: 'person', path: '/profile' },
 ];
 
@@ -13,7 +13,7 @@ export default function BottomNav() {
   return (
     <nav className="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface border-t border-outline-variant md:hidden">
       {navItems.map((item) => {
-        const isActive = location.pathname === item.path;
+        const isActive = location.pathname === item.path || (item.path === '/products' && location.pathname.startsWith('/products'));
         return (
           <Link
             key={item.path}
@@ -28,7 +28,12 @@ export default function BottomNav() {
             >
               {item.icon}
             </span>
-            <span className="text-[9px]">{item.label}</span>
+            <span className="text-[9px] relative">
+              {item.label}
+              {item.label === 'CART' && (
+                <span className="absolute -top-6 -right-4 bg-primary text-on-primary text-[8px] w-3 h-3 rounded-full flex items-center justify-center font-bold">2</span>
+              )}
+            </span>
           </Link>
         );
       })}
