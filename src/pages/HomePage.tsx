@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
@@ -52,7 +52,6 @@ const sustainabilityItems = [
 ];
 
 export default function HomePage() {
-  const sectionRefs = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
     // Intersection Observer for scroll-reveal

@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { getProductBySlug, getRelatedProducts } from '../data/products';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const product = getProductBySlug(slug || '');
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -98,9 +97,8 @@ export default function ProductDetailPage() {
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`w-20 aspect-square overflow-hidden border-2 transition-all ${
-                      selectedImage === i ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
+                    className={`w-20 aspect-square overflow-hidden border-2 transition-all ${selectedImage === i ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
                   >
                     <img src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
                   </button>
@@ -144,11 +142,10 @@ export default function ProductDetailPage() {
                     key={color.hex}
                     title={color.label}
                     onClick={() => setSelectedColor(i)}
-                    className={`w-9 h-9 rounded-full border-2 transition-all active:scale-90 ${
-                      selectedColor === i
+                    className={`w-9 h-9 rounded-full border-2 transition-all active:scale-90 ${selectedColor === i
                         ? 'border-primary scale-110'
                         : 'border-outline-variant hover:border-primary'
-                    }`}
+                      }`}
                     style={{ backgroundColor: color.hex }}
                   />
                 ))}
@@ -170,11 +167,10 @@ export default function ProductDetailPage() {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`py-3 border font-label-caps text-[14px] font-bold tracking-widest transition-all active:scale-95 ${
-                      selectedSize === size
+                    className={`py-3 border font-label-caps text-[14px] font-bold tracking-widest transition-all active:scale-95 ${selectedSize === size
                         ? 'border-primary bg-primary text-on-primary'
                         : 'border-outline-variant text-secondary hover:border-primary'
-                    }`}
+                      }`}
                   >
                     {size}
                   </button>
@@ -212,13 +208,12 @@ export default function ProductDetailPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={!selectedSize}
-                className={`w-full py-5 font-label-caps text-label-caps tracking-widest transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 ${
-                  addedToCart
+                className={`w-full py-5 font-label-caps text-label-caps tracking-widest transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 ${addedToCart
                     ? 'bg-green-600 text-white'
                     : !selectedSize
-                    ? 'bg-surface-container-high text-secondary cursor-not-allowed'
-                    : 'bg-primary text-on-primary hover:bg-tertiary'
-                }`}
+                      ? 'bg-surface-container-high text-secondary cursor-not-allowed'
+                      : 'bg-primary text-on-primary hover:bg-tertiary'
+                  }`}
               >
                 <span className="material-symbols-outlined text-[18px]">
                   {addedToCart ? 'check_circle' : 'shopping_bag'}
@@ -274,11 +269,10 @@ export default function ProductDetailPage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`font-label-caps text-label-caps tracking-widest pb-3 border-b-2 transition-all -mb-px ${
-                    activeTab === tab
+                  className={`font-label-caps text-label-caps tracking-widest pb-3 border-b-2 transition-all -mb-px ${activeTab === tab
                       ? 'border-primary text-primary'
                       : 'border-transparent text-secondary hover:text-primary'
-                  }`}
+                    }`}
                 >
                   {tab === 'details' ? 'PRODUCT DETAILS' : 'CARE GUIDE'}
                 </button>
