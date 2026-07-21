@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { products as allProducts, type Product } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import CustomSelect from '../components/CustomSelect';
 
 // ── Extended catalog (cycle existing products for demo pagination feel) ──
 const CATALOG: Product[] = [
@@ -222,7 +223,7 @@ export default function ProductsPage() {
         </aside>
 
         {/* ── Product Grid Section ── */}
-        <section className="flex-1">
+        <section className="flex-1 min-w-0">
           {/* Header row */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-gutter gap-4">
             <div>
@@ -231,7 +232,7 @@ export default function ProductsPage() {
                 SHOWING {paginated.length} OF {filtered.length} ITEMS
               </p>
             </div>
-            <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
               {/* Mobile filter toggle */}
               <button
                 className="md:hidden flex items-center gap-2 border border-outline-variant px-4 py-2 font-label-caps text-label-caps hover:border-primary transition-colors"
@@ -241,20 +242,12 @@ export default function ProductsPage() {
                 FILTER
               </button>
               {/* Sort */}
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
-                  className="bg-transparent border-none font-label-caps text-label-caps text-primary cursor-pointer focus:ring-0 pr-6 appearance-none"
-                >
-                  {SORT_OPTIONS.map((o) => (
-                    <option key={o}>Sort By: {o}</option>
-                  ))}
-                </select>
-                <span className="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none">
-                  expand_more
-                </span>
-              </div>
+              <CustomSelect
+                value={sortBy}
+                options={SORT_OPTIONS}
+                onChange={(val) => { setSortBy(val); setPage(1); }}
+                prefix="Sort By: "
+              />
             </div>
           </div>
 

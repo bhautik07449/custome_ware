@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { products } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import CustomSelect from '../components/CustomSelect';
 
 const categories = ['OUTERWEAR', 'TOPS', 'BOTTOMS', 'ACCESSORIES'];
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -17,6 +18,7 @@ export default function ShopPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>('L');
   const [selectedColor, setSelectedColor] = useState<string | null>('#D4AF37');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('RELEVANCE');
   const sheetRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when filter sheet is open
@@ -61,7 +63,7 @@ export default function ShopPage() {
               search
             </span>
           </div>
-          <div className="flex items-center justify-between border-t border-outline-variant pt-4">
+          <div className="flex flex-wrap items-center justify-between border-t border-outline-variant pt-4 gap-4">
             <button
               className="flex items-center gap-2 group"
               onClick={() => setFilterOpen(true)}
@@ -71,10 +73,12 @@ export default function ShopPage() {
                 FILTERS
               </span>
             </button>
-            <div className="flex items-center gap-2 cursor-pointer">
-              <span className="font-label-caps text-label-caps tracking-widest text-secondary">SORT BY: RELEVANCE</span>
-              <span className="material-symbols-outlined text-secondary text-[18px]">expand_more</span>
-            </div>
+            <CustomSelect
+              value={sortBy}
+              options={['RELEVANCE', 'NEWEST', 'PRICE: LOW TO HIGH', 'PRICE: HIGH TO LOW']}
+              onChange={(val) => setSortBy(val)}
+              prefix="SORT BY: "
+            />
           </div>
         </section>
 

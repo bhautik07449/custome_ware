@@ -30,12 +30,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           <span className="material-symbols-outlined text-[20px]">{added ? 'check' : 'add'}</span>
         </button>
       </Link>
-      <Link to={`/products/${product.slug}`} className="flex justify-between items-start px-2 pb-2 flex-grow">
-        <div className="overflow-hidden pr-2">
-          <h3 className="font-label-caps text-[12px] font-bold text-primary truncate w-full">{product.name}</h3>
-          <p className="font-label-caps text-[10px] text-secondary opacity-80 uppercase mt-1 truncate">{product.colors[0]?.label}</p>
-        </div>
-        <span className="font-label-caps text-[12px] font-bold text-primary shrink-0">${product.price.toFixed(2)}</span>
+      <Link to={`/products/${product.slug}`} className="flex flex-col items-start px-2 pb-2 flex-grow">
+        <h3 className="font-label-caps text-[12px] font-bold text-primary line-clamp-2 w-full leading-snug">{product.name}</h3>
+        <p className="font-label-caps text-[10px] text-secondary opacity-80 uppercase mt-1 mb-2">{product.colors[0]?.label}</p>
+        <span className="font-label-caps text-[12px] font-bold text-primary mt-auto">${product.price.toFixed(2)}</span>
       </Link>
     </div>
   );
