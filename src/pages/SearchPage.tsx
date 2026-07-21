@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { products } from '../data/products';
+import ProductCard from '../components/ProductCard';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -52,39 +52,9 @@ export default function SearchPage() {
         )}
 
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-gutter gap-y-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-gutter md:gap-y-12">
             {filteredProducts.map((product) => (
-              <Link
-                key={product.id}
-                to={`/products/${product.slug}`}
-                className="group flex flex-col cursor-pointer"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-surface-container-low mb-element-gap">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10"
-                  />
-                  {product.images[1] && (
-                    <img
-                      src={product.images[1]}
-                      alt={`${product.name} Alternate`}
-                      className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0"
-                    />
-                  )}
-                </div>
-
-                {/* Product info */}
-                <div className="flex justify-between items-start mt-2">
-                  <div>
-                    <h3 className="font-body-md text-[16px] font-bold text-primary">{product.name}</h3>
-                    <p className="font-label-caps text-[13px] text-secondary opacity-80 uppercase mt-1">
-                      {product.colors[0].label}
-                    </p>
-                  </div>
-                  <span className="font-body-md text-[16px] font-bold text-primary">${product.price}</span>
-                </div>
-              </Link>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : query.trim() ? (

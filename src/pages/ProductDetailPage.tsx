@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { getProductBySlug, getRelatedProducts } from '../data/products';
 import { useCart } from '../context/CartContext';
+import ProductCard from '../components/ProductCard';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -17,6 +18,15 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<'details' | 'care'>('details');
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const { addToCart } = useCart();
+
+  // Reset state when navigating between products
+  React.useEffect(() => {
+    setSelectedSize(null);
+    setSelectedImage(0);
+    setQuantity(1);
+    setActiveTab('details');
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   if (!product) {
     return (
@@ -359,39 +369,9 @@ export default function ProductDetailPage() {
               VIEW ALL
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-gutter">
             {related.map((rp) => (
-              <Link
-                key={rp.id}
-                to={`/products/${rp.slug}`}
-                className="group flex flex-col cursor-pointer block"
-                onClick={() => { setSelectedSize(null); setSelectedImage(0); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-surface-container-low mb-element-gap">
-                  <img
-                    src={rp.images[0]}
-                    alt={rp.name}
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10"
-                  />
-                  {rp.images[1] && (
-                    <img
-                      src={rp.images[1]}
-                      alt={`${rp.name} Alternate`}
-                      className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0"
-                    />
-                  )}
-                </div>
-
-                <div className="flex justify-between items-start mt-2">
-                  <div>
-                    <h3 className="font-body-md text-[16px] font-bold text-primary truncate">{rp.name}</h3>
-                    <p className="font-label-caps text-[13px] text-secondary opacity-80 uppercase mt-1">
-                      {rp.category}
-                    </p>
-                  </div>
-                  <span className="font-body-md text-[16px] font-bold text-primary">${rp.price.toFixed(2)}</span>
-                </div>
-              </Link>
+              <ProductCard key={rp.id} product={rp} />
             ))}
           </div>
         </section>

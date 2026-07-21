@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useCart } from '../context/CartContext';
-import { products, type Product } from '../data/products';
+import { products } from '../data/products';
+import ProductCard from '../components/ProductCard';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,9 +30,6 @@ const sustainabilityItems = [
 ];
 
 export default function HomePage() {
-  const { addToCart } = useCart();
-  const [addedId, setAddedId] = useState<number | null>(null);
-  
   const [currentSlide, setCurrentSlide] = useState(0);
   const heroImages = [
     '/hero_architecture.png',
@@ -49,14 +46,6 @@ export default function HomePage() {
 
   const mainRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-
-  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product, product.sizes[0], product.colors[0].label, 1);
-    setAddedId(product.id);
-    setTimeout(() => setAddedId(null), 1500);
-  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -180,25 +169,9 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-gutter">
           {newArrivals.map((product) => (
-            <div key={product.id} className="group flex flex-col product-card-hover luxury-shadow p-2 bg-surface">
-              <Link to={`/products/${product.slug}`} className="relative aspect-[4/5] overflow-hidden bg-surface-container mb-4 block">
-                <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10" />
-                {product.images[1] && <img src={product.images[1]} alt="Alternate" className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0" />}
-                
-                <button onClick={(e) => handleQuickAdd(product, e)} className="absolute bottom-4 right-4 bg-primary/90 text-on-primary p-3 opacity-0 group-hover:opacity-100 transition-all duration-300 active:scale-90 z-20 shadow-lg rounded-full flex items-center justify-center hover:bg-tertiary hover:text-black">
-                  <span className="material-symbols-outlined text-[20px]">{addedId === product.id ? 'check' : 'add'}</span>
-                </button>
-              </Link>
-              <Link to={`/products/${product.slug}`} className="flex justify-between items-start px-2 pb-2">
-                <div>
-                  <h3 className="font-label-caps text-[12px] font-bold text-primary truncate w-[160px]">{product.name}</h3>
-                  <p className="font-label-caps text-[10px] text-secondary opacity-80 uppercase mt-1">{product.colors[0].label}</p>
-                </div>
-                <span className="font-label-caps text-[12px] font-bold text-primary">${product.price.toFixed(2)}</span>
-              </Link>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>

@@ -29,7 +29,7 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-outline-variant">
+    <footer className="hidden md:block w-full border-t border-outline-variant">
       {/* Main footer body */}
       <div className="flex flex-col md:flex-row justify-between items-start px-container-margin py-section-gap max-w-[1440px] mx-auto gap-12">
         {/* Brand info */}

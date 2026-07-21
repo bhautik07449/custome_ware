@@ -3,27 +3,29 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
+import AddressForm from '../components/AddressForm';
 
 export default function CheckoutPage() {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const { cartItems, subtotal, clearCart } = useCart();
-  const { profile, addresses, placeOrder } = useUser();
+  const { profile, addresses, placeOrder, addAddress } = useUser();
+  
+  const [selectedAddressId, setSelectedAddressId] = useState<string>(
+    addresses.find(a => a.isDefault)?.id || addresses[0]?.id || ''
+  );
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
   
   const shipping = 15;
   const total = subtotal + shipping;
-  const shippingAddress = addresses[0] || {
-    id: 'temp',
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    line1: '123 Architecture Blvd',
-    city: 'New York',
-    state: 'NY',
-    zip: '10001'
-  };
+  const shippingAddress = addresses.find(a => a.id === selectedAddressId) || addresses[0];
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
+    if (step === 1 && !shippingAddress && !isAddingAddress) {
+      alert("Please select or add a shipping address.");
+      return;
+    }
     if (step < 3) setStep(step + 1);
   };
 
@@ -95,22 +97,51 @@ export default function CheckoutPage() {
             <form onSubmit={handleNext} className="flex flex-col gap-8">
               <h2 className="font-headline-lg-mobile text-primary">Shipping Information</h2>
               
-              <div className="grid grid-cols-2 gap-4">
-                <input required placeholder="First Name" defaultValue={profile.firstName} className="col-span-1 korzae-input" />
-                <input required placeholder="Last Name" defaultValue={profile.lastName} className="col-span-1 korzae-input" />
-                <input required type="email" placeholder="Email Address" defaultValue={profile.email} className="col-span-2 korzae-input" />
-                <input required placeholder="Address Line 1" defaultValue={shippingAddress.line1} className="col-span-2 korzae-input" />
-                <input placeholder="Apartment, suite, etc. (optional)" defaultValue={shippingAddress.line2} className="col-span-2 korzae-input" />
-                <input required placeholder="City" defaultValue={shippingAddress.city} className="col-span-1 korzae-input" />
-                <div className="col-span-1 flex gap-4">
-                  <input required placeholder="State" defaultValue={shippingAddress.state} className="col-span-1 korzae-input" />
-                  <input required placeholder="ZIP" defaultValue={shippingAddress.zip} className="col-span-1 korzae-input" />
+              {isAddingAddress ? (
+                <div className="mt-4">
+                  <h3 className="font-label-caps text-[12px] tracking-widest text-secondary mb-4">ADD NEW ADDRESS</h3>
+                  <AddressForm 
+                    onSubmit={(newAddress) => { 
+                      addAddress(newAddress); 
+                      setSelectedAddressId(newAddress.id); 
+                      setIsAddingAddress(false); 
+                    }} 
+                    onCancel={() => setIsAddingAddress(false)} 
+                  />
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {addresses.map((address) => (
+                    <label key={address.id} className={`border p-4 flex gap-4 cursor-pointer transition-colors ${selectedAddressId === address.id ? 'border-primary bg-surface-container-lowest' : 'border-outline-variant hover:border-primary'}`}>
+                      <input 
+                        type="radio" 
+                        name="address" 
+                        checked={selectedAddressId === address.id}
+                        onChange={() => setSelectedAddressId(address.id)}
+                        className="accent-primary w-4 h-4 mt-1"
+                      />
+                      <div>
+                        <p className="font-body-md font-bold text-primary">{address.firstName} {address.lastName}</p>
+                        <p className="font-body-md text-secondary">{address.line1}{address.line2 && `, ${address.line2}`}</p>
+                        <p className="font-body-md text-secondary">{address.city}, {address.state} {address.zip}</p>
+                      </div>
+                    </label>
+                  ))}
+                  <button 
+                    type="button" 
+                    onClick={() => setIsAddingAddress(true)}
+                    className="font-label-caps text-label-caps border border-primary px-6 py-4 hover:bg-primary hover:text-on-primary transition-colors tracking-widest text-center mt-2"
+                  >
+                    + ADD NEW ADDRESS
+                  </button>
+                </div>
+              )}
               
-              <button type="submit" className="w-full bg-primary text-on-primary py-4 font-button-text text-button-text uppercase tracking-widest mt-4 hover:bg-opacity-90">
-                CONTINUE TO PAYMENT
-              </button>
+              {!isAddingAddress && (
+                <button type="submit" className="w-full bg-primary text-on-primary py-4 font-button-text text-button-text uppercase tracking-widest mt-4 hover:bg-opacity-90">
+                  CONTINUE TO PAYMENT
+                </button>
+              )}
             </form>
           )}
 
@@ -130,7 +161,7 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                   <input 
                     required 
                     placeholder="Card Number (16 digits)" 

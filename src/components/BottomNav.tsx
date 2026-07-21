@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const navItems = [
   { label: 'HOME', icon: 'home', path: '/' },
@@ -9,6 +10,7 @@ const navItems = [
 
 export default function BottomNav() {
   const location = useLocation();
+  const { cartCount } = useCart();
 
   return (
     <nav className="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface border-t border-outline-variant md:hidden">
@@ -18,7 +20,7 @@ export default function BottomNav() {
           <Link
             key={item.path}
             to={item.path}
-            className={`flex flex-col items-center justify-center font-label-caps text-label-caps transition-all ${
+            className={`flex flex-col items-center justify-center font-label-caps text-label-caps transition-all focus:outline-none ${
               isActive ? 'text-primary font-bold' : 'text-secondary hover:text-primary'
             }`}
           >
@@ -30,8 +32,8 @@ export default function BottomNav() {
             </span>
             <span className="text-[9px] relative">
               {item.label}
-              {item.label === 'CART' && (
-                <span className="absolute -top-6 -right-4 bg-primary text-on-primary text-[8px] w-3 h-3 rounded-full flex items-center justify-center font-bold">2</span>
+              {item.label === 'CART' && cartCount > 0 && (
+                <span className="absolute -top-6 -right-4 bg-primary text-on-primary text-[8px] w-3 h-3 rounded-full flex items-center justify-center font-bold">{cartCount}</span>
               )}
             </span>
           </Link>

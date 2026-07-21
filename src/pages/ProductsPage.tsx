@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { products as allProducts, type Product } from '../data/products';
-import { useCart } from '../context/CartContext';
+import ProductCard from '../components/ProductCard';
 
 // ── Extended catalog (cycle existing products for demo pagination feel) ──
 const CATALOG: Product[] = [
@@ -31,21 +31,16 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState('Featured');
   const [page, setPage] = useState(1);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [addedId, setAddedId] = useState<number | null>(null);
-  const { addToCart } = useCart();
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   const toggleCategory = (cat: string) =>
     setActiveCategories((prev) =>
       prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
     );
-
-  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product, product.sizes[0], product.colors[0].label, 1);
-    setAddedId(product.id);
-    setTimeout(() => setAddedId(null), 1500);
-  };
 
   const filtered = useMemo(() => {
     let result = [...CATALOG];
@@ -264,66 +259,15 @@ export default function ProductsPage() {
           </div>
 
           {/* ── 4-Column Product Grid ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-gutter gap-y-12">
-            {paginated.map((product, idx) => (
-              <Link
-                key={product.id}
-                to={`/products/${allProducts.find(p => p.id === product.id % 100 || p.id === product.id)?.slug || product.slug.replace(/-v[23]$/, '')}`}
-                className="product-card-hover group flex flex-col cursor-pointer"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-surface-container-low mb-element-gap">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10"
-                  />
-                  {product.images[1] && (
-                    <img
-                      src={product.images[1]}
-                      alt={`${product.name} Alternate`}
-                      className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0"
-                    />
-                  )}
-
-                  {/* Quick Add Overlay */}
-                  <div className="add-to-bag-btn absolute bottom-0 left-0 right-0 p-4 opacity-0 translate-y-4 transition-all duration-300">
-                    <button
-                      onClick={(e) => handleQuickAdd(product, e)}
-                      className={`w-full py-3 font-button-text text-button-text uppercase tracking-widest transition-all ${
-                        addedId === product.id
-                          ? 'bg-secondary text-white'
-                          : 'bg-primary text-on-primary hover:bg-opacity-90'
-                      }`}
-                    >
-                      {addedId === product.id ? 'Added to Bag ✓' : 'Quick Add +'}
-                    </button>
-                  </div>
-
-                  {/* Badges */}
-                  {product.isNew && idx % 8 === 0 && (
-                    <span className="absolute top-4 left-4 bg-primary text-on-primary font-label-caps text-[10px] px-2 py-1">
-                      NEW ARRIVAL
-                    </span>
-                  )}
-                  {idx % 8 === 7 && (
-                    <span className="absolute top-4 left-4 bg-[#D4AF37] text-white font-label-caps text-[10px] px-2 py-1">
-                      LIMITED
-                    </span>
-                  )}
-                </div>
-
-                {/* Product info */}
-                <div className="flex justify-between items-start mt-2">
-                  <div>
-                    <h3 className="font-body-md text-[16px] font-bold text-primary">{product.name}</h3>
-                    <p className="font-label-caps text-[12px] text-secondary opacity-80 uppercase mt-1">
-                      {product.colors[0].label}
-                    </p>
-                  </div>
-                  <span className="font-body-md text-[16px] font-bold text-primary">${product.price}</span>
-                </div>
-              </Link>
-            ))}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-gutter md:gap-y-12">
+            {paginated.map((product) => {
+              const baseProduct = allProducts.find(p => p.id === product.id % 100 || p.id === product.id) || product;
+              const mappedProduct = {
+                ...product,
+                slug: baseProduct.slug || product.slug.replace(/-v[23]$/, '')
+              };
+              return <ProductCard key={product.id} product={mappedProduct} />;
+            })}
           </div>
 
           {/* ── Pagination ── */}

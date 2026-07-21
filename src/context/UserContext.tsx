@@ -35,6 +35,8 @@ interface UserContextType {
   addresses: Address[];
   addAddress: (address: Address) => void;
   orders: Order[];
+  editAddress: (id: string, updated: Address) => void;
+  deleteAddress: (id: string) => void;
   placeOrder: (items: CartItem[], total: number, shippingAddress: Address) => void;
 }
 
@@ -85,7 +87,29 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   const addAddress = (address: Address) => {
-    setAddresses((prev) => [...prev, address]);
+    setAddresses((prev) => {
+      let newAddresses = [...prev];
+      if (address.isDefault) {
+        newAddresses = newAddresses.map(a => ({ ...a, isDefault: false }));
+      } else if (newAddresses.length === 0) {
+        address.isDefault = true;
+      }
+      return [...newAddresses, address];
+    });
+  };
+
+  const editAddress = (id: string, updated: Address) => {
+    setAddresses((prev) => {
+      let newAddresses = prev.map(a => a.id === id ? updated : a);
+      if (updated.isDefault) {
+        newAddresses = newAddresses.map(a => a.id === id ? a : { ...a, isDefault: false });
+      }
+      return newAddresses;
+    });
+  };
+
+  const deleteAddress = (id: string) => {
+    setAddresses((prev) => prev.filter(a => a.id !== id));
   };
 
   const placeOrder = (items: CartItem[], total: number, shippingAddress: Address) => {
@@ -107,6 +131,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         updateProfile,
         addresses,
         addAddress,
+        editAddress,
+        deleteAddress,
         orders,
         placeOrder,
       }}

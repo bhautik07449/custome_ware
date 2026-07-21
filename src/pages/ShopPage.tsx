@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { products, type Product } from '../data/products';
-import { useCart } from '../context/CartContext';
+import { products } from '../data/products';
+import ProductCard from '../components/ProductCard';
 
 const categories = ['OUTERWEAR', 'TOPS', 'BOTTOMS', 'ACCESSORIES'];
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -14,8 +14,8 @@ const colorOptions = [
 export default function ShopPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('OUTERWEAR');
-  const [selectedSize, setSelectedSize] = useState('L');
-  const [selectedColor, setSelectedColor] = useState('#D4AF37');
+  const [selectedSize, setSelectedSize] = useState<string | null>('L');
+  const [selectedColor, setSelectedColor] = useState<string | null>('#D4AF37');
   const [searchQuery, setSearchQuery] = useState('');
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -25,16 +25,9 @@ export default function ShopPage() {
     return () => { document.body.style.overflow = ''; };
   }, [filterOpen]);
 
-  const { addToCart } = useCart();
-  const [addedId, setAddedId] = useState<number | null>(null);
-
-  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product, product.sizes[0], product.colors[0].label, 1);
-    setAddedId(product.id);
-    setTimeout(() => setAddedId(null), 1500);
-  };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -104,46 +97,9 @@ export default function ShopPage() {
         </section>
 
         {/* ── Product Grid ── */}
-        <section className="px-container-margin grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter max-w-[1440px] mx-auto">
+        <section className="px-container-margin grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-gutter max-w-[1440px] mx-auto">
           {filtered.map((product) => (
-            <div
-              key={product.id}
-              className="product-card-hover luxury-shadow bg-surface-container-lowest transition-all duration-300 group cursor-pointer"
-              onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.98)')}
-              onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-            >
-              <div className="aspect-[4/5] relative overflow-hidden bg-surface-container">
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <button 
-                  onClick={(e) => handleQuickAdd(product, e)}
-                  className="absolute bottom-3 right-3 bg-white/90 backdrop-blur p-2 rounded-full shadow-md active:scale-90 transition-transform flex items-center justify-center"
-                >
-                  <span className="material-symbols-outlined text-primary text-[18px]">
-                    {addedId === product.id ? 'check' : 'add'}
-                  </span>
-                </button>
-              </div>
-              <div className="p-3 flex flex-col gap-1">
-                <h3 className="font-label-caps text-[11px] tracking-wider text-primary truncate">{product.name}</h3>
-                <div className="flex justify-between items-center">
-                  <p className="font-label-caps text-[11px] text-secondary">${product.price.toFixed(2)}</p>
-                  <div className="flex gap-1">
-                    {product.colors.map((color) => (
-                      <div
-                        key={color.hex}
-                        className="w-2 h-2 rounded-full border border-outline-variant"
-                        style={{ backgroundColor: color.hex }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </section>
 

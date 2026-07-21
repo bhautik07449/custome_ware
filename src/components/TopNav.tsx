@@ -30,11 +30,11 @@ export default function TopNav() {
     <>
       <nav
         id="top-nav"
-        className={`w-full sticky top-0 z-50 bg-surface transition-shadow duration-300 ${
+        className={`hidden md:block w-full sticky top-0 z-50 bg-[#FFFFFF] transition-shadow duration-300 ${
           scrolled ? 'shadow-sm' : ''
         }`}
       >
-        <div className="flex justify-between items-center px-container-margin py-gutter max-w-[1440px] mx-auto">
+        <div className="flex justify-between items-center px-container-margin py-4 md:py-gutter max-w-[1440px] mx-auto">
           {/* Left — desktop nav links */}
           <div className="flex-1 hidden md:flex items-center space-x-8">
             {navLinks.map((link) => {
@@ -61,13 +61,13 @@ export default function TopNav() {
               <img
                 src="/korzae_logo.png"
                 alt="KORZAE"
-                className="h-14 w-auto object-contain"
+                className="h-8 md:h-14 w-auto object-contain"
               />
             </Link>
           </div>
 
           {/* Right — icons */}
-          <div className="flex-1 flex justify-end gap-6 items-center">
+          <div className="flex-1 flex justify-end gap-3 md:gap-6 items-center">
             <Link to="/search" className="material-symbols-outlined text-[24px] text-primary hover:opacity-70 transition-opacity">search</Link>
             <Link to="/profile" className="material-symbols-outlined text-[24px] text-primary hover:opacity-70 transition-opacity">person</Link>
             <Link to="/cart" className="relative group">
