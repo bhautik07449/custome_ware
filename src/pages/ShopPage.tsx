@@ -1,15 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-
-const products = [
-  { id: 1, name: 'EMBROIDERED HEAVY HOODIE', price: '$185.00', colors: ['#000000', '#ffffff'], image: '/product_embroidered_hoodie.png' },
-  { id: 2, name: 'STRUCTURED WOOL OVERCOAT', price: '$420.00', colors: ['#f5f5dc'], image: '/product_wool_coat.png' },
-  { id: 3, name: 'ARCHITECTURAL DENIM', price: '$210.00', colors: ['#000000', '#303030'], image: '/product_denim.png' },
-  { id: 4, name: 'SIGNATURE LEATHER TOTE', price: '$350.00', colors: ['#000000'], image: '/product_crossbody.png' },
-  { id: 5, name: 'HEAVYWEIGHT BOX TEE', price: '$85.00', colors: ['#000000', '#ffffff'], image: '/product_tee.png' },
-  { id: 6, name: 'STRUCTURAL CARGO PANT', price: '$195.00', colors: ['#303030'], image: '/product_trousers.png' },
-  { id: 7, name: 'WASHED SAND HOODIE', price: '$140.00', colors: ['#f5f5dc'], image: '/product_sand_hoodie.png' },
-  { id: 8, name: 'PEBBLED LEATHER CROSSBODY', price: '$210.00', colors: ['#000000'], image: '/product_crossbody.png' },
-];
+import { products, type Product } from '../data/products';
+import { useCart } from '../context/CartContext';
 
 const categories = ['OUTERWEAR', 'TOPS', 'BOTTOMS', 'ACCESSORIES'];
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -33,6 +24,17 @@ export default function ShopPage() {
     document.body.style.overflow = filterOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [filterOpen]);
+
+  const { addToCart } = useCart();
+  const [addedId, setAddedId] = useState<number | null>(null);
+
+  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, product.sizes[0], product.colors[0].label, 1);
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 1500);
+  };
 
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -113,24 +115,29 @@ export default function ShopPage() {
             >
               <div className="aspect-[4/5] relative overflow-hidden bg-surface-container">
                 <img
-                  src={product.image}
+                  src={product.images[0]}
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                <button className="absolute bottom-3 right-3 bg-white/90 backdrop-blur p-2 rounded-full shadow-md active:scale-90 transition-transform">
-                  <span className="material-symbols-outlined text-primary text-[18px]">add</span>
+                <button 
+                  onClick={(e) => handleQuickAdd(product, e)}
+                  className="absolute bottom-3 right-3 bg-white/90 backdrop-blur p-2 rounded-full shadow-md active:scale-90 transition-transform flex items-center justify-center"
+                >
+                  <span className="material-symbols-outlined text-primary text-[18px]">
+                    {addedId === product.id ? 'check' : 'add'}
+                  </span>
                 </button>
               </div>
               <div className="p-3 flex flex-col gap-1">
                 <h3 className="font-label-caps text-[11px] tracking-wider text-primary truncate">{product.name}</h3>
                 <div className="flex justify-between items-center">
-                  <p className="font-label-caps text-[11px] text-secondary">{product.price}</p>
+                  <p className="font-label-caps text-[11px] text-secondary">${product.price.toFixed(2)}</p>
                   <div className="flex gap-1">
                     {product.colors.map((color) => (
                       <div
-                        key={color}
+                        key={color.hex}
                         className="w-2 h-2 rounded-full border border-outline-variant"
-                        style={{ backgroundColor: color }}
+                        style={{ backgroundColor: color.hex }}
                       />
                     ))}
                   </div>

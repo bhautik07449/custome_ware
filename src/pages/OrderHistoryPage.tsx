@@ -1,23 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useUser } from '../context/UserContext';
 
 export default function OrderHistoryPage() {
-  const orders = [
-    {
-      id: 'KRZ-827361',
-      date: 'Oct 15, 2024',
-      status: 'DELIVERED',
-      total: 395.00,
-      items: 2
-    },
-    {
-      id: 'KRZ-492817',
-      date: 'Nov 02, 2024',
-      status: 'PROCESSING',
-      total: 185.00,
-      items: 1
-    }
-  ];
+  const { orders } = useUser();
 
   return (
     <div className="max-w-[1440px] mx-auto px-container-margin py-12 min-h-screen">
@@ -73,9 +59,9 @@ export default function OrderHistoryPage() {
                   </div>
                 </div>
                 
-                <button className="shrink-0 border-b border-primary font-label-caps text-[11px] text-primary pb-1 hover:text-secondary hover:border-secondary transition-colors self-start md:self-auto">
+                <Link to={`/orders/${order.id}`} className="shrink-0 border-b border-primary font-label-caps text-[11px] text-primary pb-1 hover:text-secondary hover:border-secondary transition-colors self-start md:self-auto uppercase tracking-widest">
                   VIEW DETAILS
-                </button>
+                </Link>
               </div>
             ))}
           </div>

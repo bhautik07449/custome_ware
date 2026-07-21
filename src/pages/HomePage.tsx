@@ -1,37 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useCart } from '../context/CartContext';
+import { products, type Product } from '../data/products';
 
-const newArrivals = [
-  {
-    id: 1,
-    name: 'Structural Hoodie',
-    color: 'CARBON BLACK',
-    price: '$220.00',
-    image: '/product_hoodie.png',
-  },
-  {
-    id: 2,
-    name: 'Tapered Wool Trouser',
-    color: 'ASH GREY',
-    price: '$185.00',
-    image: '/product_trousers.png',
-  },
-  {
-    id: 3,
-    name: 'Heavyweight Monogram Tee',
-    color: 'OPTIC WHITE',
-    price: '$85.00',
-    image: '/product_tee.png',
-  },
-  {
-    id: 4,
-    name: 'Modular Shell Jacket',
-    color: 'MIDNIGHT NAVY',
-    price: '$450.00',
-    image: '/product_jacket.png',
-  },
-];
+const newArrivals = products.slice(0, 4);
 
 const sustainabilityItems = [
   {
@@ -52,6 +25,16 @@ const sustainabilityItems = [
 ];
 
 export default function HomePage() {
+  const { addToCart } = useCart();
+  const [addedId, setAddedId] = useState<number | null>(null);
+
+  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, product.sizes[0], product.colors[0].label, 1);
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 1500);
+  };
 
   useEffect(() => {
     // Intersection Observer for scroll-reveal
@@ -124,10 +107,10 @@ export default function HomePage() {
           <span className="font-label-caps text-label-caps text-on-primary mb-4 block tracking-[0.4em] opacity-80">
             COLLECTION 01
           </span>
-          <h1 className="font-display-lg text-[56px] md:text-[120px] leading-none text-on-primary tracking-tighter mb-8">
+          <h1 className="font-display-lg text-[40px] md:text-[64px] lg:text-[100px] leading-tight md:leading-none text-on-primary tracking-tighter mb-8">
             The Architecture
-            <br />
-            of Silence
+            <br className="hidden md:block" />
+            <span className="md:hidden"> </span>of Silence
           </h1>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link
@@ -147,42 +130,58 @@ export default function HomePage() {
 
       {/* ── New Arrivals Grid ── */}
       <section className="reveal-section max-w-[1440px] mx-auto px-container-margin py-section-gap transition-all duration-[1000ms] ease-out">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6 md:gap-4">
           <div>
-            <h2 className="font-headline-lg text-headline-lg mb-2">New Arrivals</h2>
+            <h2 className="font-headline-lg text-[32px] md:text-[40px] mb-2">New Arrivals</h2>
             <p className="font-body-md text-body-md text-secondary max-w-md">
               Precision engineered essentials designed for the modern landscape.
             </p>
           </div>
           <Link
             to="/shop"
-            className="font-label-caps text-label-caps border-b border-outline pb-1 hover:border-primary transition-colors whitespace-nowrap"
+            className="font-label-caps text-label-caps border-b border-outline pb-1 hover:border-primary transition-colors whitespace-nowrap self-start md:self-auto"
           >
             View All Arrivals
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
           {newArrivals.map((product) => (
-            <div key={product.id} className="group cursor-pointer">
-              <div className="aspect-[4/5] overflow-hidden bg-surface-container mb-4 relative">
+            <Link key={product.id} to={`/products/${product.slug}`} className="group cursor-pointer flex flex-col">
+              <div className="relative aspect-[4/5] overflow-hidden bg-surface-container mb-4">
                 <img
-                  src={product.image}
+                  src={product.images[0]}
                   alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10"
                 />
-                <button className="absolute bottom-4 right-4 bg-white/90 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 active:scale-90">
-                  <span className="material-symbols-outlined">add</span>
+                {product.images[1] && (
+                  <img
+                    src={product.images[1]}
+                    alt={`${product.name} Alternate`}
+                    className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0"
+                  />
+                )}
+                
+                <button 
+                  onClick={(e) => handleQuickAdd(product, e)}
+                  className="absolute bottom-4 right-4 bg-white/90 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 active:scale-90 z-20 shadow-sm flex items-center justify-center rounded-full"
+                >
+                  <span className="material-symbols-outlined text-[20px] text-primary">
+                    {addedId === product.id ? 'check' : 'add'}
+                  </span>
                 </button>
               </div>
-              <div className="flex justify-between items-start">
+              
+              <div className="flex justify-between items-start mt-2">
                 <div>
-                  <h3 className="font-body-md text-body-md font-semibold">{product.name}</h3>
-                  <p className="font-label-caps text-[10px] text-secondary mt-1">{product.color}</p>
+                  <h3 className="font-body-md text-[16px] font-bold text-primary">{product.name}</h3>
+                  <p className="font-label-caps text-[13px] text-secondary opacity-80 uppercase mt-1">
+                    {product.colors[0].label}
+                  </p>
                 </div>
-                <span className="font-label-caps text-label-caps whitespace-nowrap ml-2">{product.price}</span>
+                <span className="font-body-md text-[16px] font-bold text-primary">${product.price.toFixed(2)}</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -192,8 +191,8 @@ export default function HomePage() {
         <div className="max-w-[1440px] mx-auto px-container-margin">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
             {/* Text — left on desktop, bottom on mobile */}
-            <div className="md:col-span-5 order-2 md:order-1 mt-12 md:mt-0">
-              <h2 className="font-display-lg text-[36px] md:text-[64px] text-on-primary leading-tight mb-8">
+            <div className="md:col-span-5 order-2 md:order-1 mt-12 md:mt-0 text-center md:text-left">
+              <h2 className="font-display-lg text-[32px] md:text-[48px] lg:text-[64px] text-on-primary leading-tight mb-8">
                 Minimalism is not a lack of something, but the perfect amount of it.
               </h2>
               <p className="font-body-md text-body-md text-on-primary/60 max-w-md mb-12">

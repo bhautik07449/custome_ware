@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const navLinks = [
   { label: 'Shop All', path: '/products' },
@@ -12,6 +13,7 @@ export default function TopNav() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -70,7 +72,11 @@ export default function TopNav() {
             <Link to="/profile" className="material-symbols-outlined text-[24px] text-primary hover:opacity-70 transition-opacity">person</Link>
             <Link to="/cart" className="relative group">
               <span className="material-symbols-outlined text-[24px] text-primary group-hover:opacity-70 transition-opacity">shopping_bag</span>
-              <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {cartCount}
+                </span>
+              )}
             </Link>
             {/* Mobile hamburger */}
             <button

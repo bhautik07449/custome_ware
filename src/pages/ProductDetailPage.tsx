@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { getProductBySlug, getRelatedProducts } from '../data/products';
+import { useCart } from '../context/CartContext';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -14,6 +15,7 @@ export default function ProductDetailPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [wishlist, setWishlist] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'care'>('details');
+  const { addToCart } = useCart();
 
   if (!product) {
     return (
@@ -35,7 +37,8 @@ export default function ProductDetailPage() {
   const related = getRelatedProducts(product, 4);
 
   const handleAddToCart = () => {
-    if (!selectedSize) return;
+    if (!selectedSize || !product) return;
+    addToCart(product, selectedSize, product.colors[selectedColor].label, quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2500);
   };
@@ -311,19 +314,33 @@ export default function ProductDetailPage() {
               <Link
                 key={rp.id}
                 to={`/products/${rp.slug}`}
-                className="group cursor-pointer block"
+                className="group flex flex-col cursor-pointer block"
                 onClick={() => { setSelectedSize(null); setSelectedImage(0); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               >
-                <div className="aspect-[4/5] overflow-hidden bg-surface-container mb-4 product-card-hover luxury-shadow transition-all duration-300">
+                <div className="relative aspect-[4/5] overflow-hidden bg-surface-container-low mb-element-gap">
                   <img
                     src={rp.images[0]}
                     alt={rp.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10"
                   />
+                  {rp.images[1] && (
+                    <img
+                      src={rp.images[1]}
+                      alt={`${rp.name} Alternate`}
+                      className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0"
+                    />
+                  )}
                 </div>
-                <p className="font-label-caps text-[10px] text-secondary mb-1 tracking-widest">{rp.category}</p>
-                <h3 className="font-body-md text-[14px] font-semibold text-primary truncate">{rp.name}</h3>
-                <p className="font-label-caps text-label-caps text-primary mt-1">${rp.price.toFixed(2)}</p>
+
+                <div className="flex justify-between items-start mt-2">
+                  <div>
+                    <h3 className="font-body-md text-[16px] font-bold text-primary truncate">{rp.name}</h3>
+                    <p className="font-label-caps text-[13px] text-secondary opacity-80 uppercase mt-1">
+                      {rp.category}
+                    </p>
+                  </div>
+                  <span className="font-body-md text-[16px] font-bold text-primary">${rp.price.toFixed(2)}</span>
+                </div>
               </Link>
             ))}
           </div>

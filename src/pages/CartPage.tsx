@@ -1,15 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { products } from '../data/products';
+import { useCart } from '../context/CartContext';
 
 export default function CartPage() {
-  // Dummy cart data for display
-  const cartItems = [
-    { product: products[0], quantity: 1, size: 'M' },
-    { product: products[3], quantity: 1, size: 'ONE SIZE' },
-  ];
-
-  const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { cartItems, subtotal, removeFromCart, updateQuantity } = useCart();
 
   return (
     <div className="max-w-[1440px] mx-auto px-container-margin py-12 min-h-screen">
@@ -46,8 +40,8 @@ export default function CartPage() {
               <div className="text-right">TOTAL</div>
             </div>
             
-            {cartItems.map((item, idx) => (
-              <div key={idx} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center pb-8 border-b border-outline-variant">
+            {cartItems.map((item) => (
+              <div key={item.id} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center pb-8 border-b border-outline-variant">
                 <div className="col-span-2 flex gap-4">
                   <div className="w-24 aspect-[4/5] bg-surface-container shrink-0">
                     <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
@@ -55,8 +49,8 @@ export default function CartPage() {
                   <div className="flex flex-col justify-center">
                     <h3 className="font-body-md font-semibold text-primary">{item.product.name}</h3>
                     <p className="font-label-caps text-[12px] font-bold text-secondary tracking-widest mt-1">SIZE: <span className="text-primary">{item.size}</span></p>
-                    <p className="font-label-caps text-[12px] font-bold text-secondary tracking-widest mt-1">COLOR: <span className="text-primary">{item.product.colors[0].label.toUpperCase()}</span></p>
-                    <button className="text-left font-label-caps text-[10px] text-error mt-3 hover:underline">REMOVE</button>
+                    <p className="font-label-caps text-[12px] font-bold text-secondary tracking-widest mt-1">COLOR: <span className="text-primary">{item.color.toUpperCase()}</span></p>
+                    <button onClick={() => removeFromCart(item.id)} className="text-left font-label-caps text-[10px] text-error mt-3 hover:underline">REMOVE</button>
                   </div>
                 </div>
                 
@@ -66,11 +60,11 @@ export default function CartPage() {
                 
                 <div className="flex justify-start md:justify-center items-center gap-4">
                   <div className="flex items-center border border-outline-variant">
-                    <button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container active:scale-90 transition-all">
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1} className="w-8 h-8 flex items-center justify-center hover:bg-surface-container active:scale-90 transition-all disabled:opacity-50">
                       <span className="material-symbols-outlined text-[16px]">remove</span>
                     </button>
                     <span className="w-8 text-center font-label-caps text-label-caps">{item.quantity}</span>
-                    <button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container active:scale-90 transition-all">
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-surface-container active:scale-90 transition-all">
                       <span className="material-symbols-outlined text-[16px]">add</span>
                     </button>
                   </div>

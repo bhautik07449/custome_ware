@@ -1,19 +1,26 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { products } from '../data/products';
+import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
 
 export default function CheckoutPage() {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const cartItems = [
-    { product: products[0], quantity: 1, size: 'M' },
-    { product: products[3], quantity: 1, size: 'ONE SIZE' },
-  ];
-  const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { cartItems, subtotal, clearCart } = useCart();
+  const { profile, addresses, placeOrder } = useUser();
+  
   const shipping = 15;
   const total = subtotal + shipping;
+  const shippingAddress = addresses[0] || {
+    id: 'temp',
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+    line1: '123 Architecture Blvd',
+    city: 'New York',
+    state: 'NY',
+    zip: '10001'
+  };
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +30,8 @@ export default function CheckoutPage() {
   const handlePlaceOrder = () => {
     setIsProcessing(true);
     setTimeout(() => {
+      placeOrder(cartItems, total, shippingAddress);
+      clearCart();
       setIsProcessing(false);
       setStep(4); // Success step
     }, 2000);
@@ -87,15 +96,15 @@ export default function CheckoutPage() {
               <h2 className="font-headline-lg-mobile text-primary">Shipping Information</h2>
               
               <div className="grid grid-cols-2 gap-4">
-                <input required placeholder="First Name" className="col-span-1 korzae-input" />
-                <input required placeholder="Last Name" className="col-span-1 korzae-input" />
-                <input required type="email" placeholder="Email Address" className="col-span-2 korzae-input" />
-                <input required placeholder="Address Line 1" className="col-span-2 korzae-input" />
-                <input placeholder="Apartment, suite, etc. (optional)" className="col-span-2 korzae-input" />
-                <input required placeholder="City" className="col-span-1 korzae-input" />
+                <input required placeholder="First Name" defaultValue={profile.firstName} className="col-span-1 korzae-input" />
+                <input required placeholder="Last Name" defaultValue={profile.lastName} className="col-span-1 korzae-input" />
+                <input required type="email" placeholder="Email Address" defaultValue={profile.email} className="col-span-2 korzae-input" />
+                <input required placeholder="Address Line 1" defaultValue={shippingAddress.line1} className="col-span-2 korzae-input" />
+                <input placeholder="Apartment, suite, etc. (optional)" defaultValue={shippingAddress.line2} className="col-span-2 korzae-input" />
+                <input required placeholder="City" defaultValue={shippingAddress.city} className="col-span-1 korzae-input" />
                 <div className="col-span-1 flex gap-4">
-                  <input required placeholder="State" className="col-span-1 korzae-input" />
-                  <input required placeholder="ZIP" className="col-span-1 korzae-input" />
+                  <input required placeholder="State" defaultValue={shippingAddress.state} className="col-span-1 korzae-input" />
+                  <input required placeholder="ZIP" defaultValue={shippingAddress.zip} className="col-span-1 korzae-input" />
                 </div>
               </div>
               
@@ -147,10 +156,10 @@ export default function CheckoutPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-surface-container-low p-6">
                 <div>
                   <h3 className="font-label-caps text-[10px] text-secondary tracking-widest mb-3">SHIPPING TO</h3>
-                  <p className="font-body-md text-primary">John Doe</p>
-                  <p className="font-body-md text-secondary">123 Architecture Blvd</p>
-                  <p className="font-body-md text-secondary">Apt 4B</p>
-                  <p className="font-body-md text-secondary">New York, NY 10001</p>
+                  <p className="font-body-md text-primary">{profile.firstName} {profile.lastName}</p>
+                  <p className="font-body-md text-secondary">{shippingAddress.line1}</p>
+                  {shippingAddress.line2 && <p className="font-body-md text-secondary">{shippingAddress.line2}</p>}
+                  <p className="font-body-md text-secondary">{shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
                 </div>
                 <div>
                   <h3 className="font-label-caps text-[10px] text-secondary tracking-widest mb-3">PAYMENT METHOD</h3>

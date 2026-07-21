@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { products as allProducts, type Product } from '../data/products';
+import { useCart } from '../context/CartContext';
 
 // ── Extended catalog (cycle existing products for demo pagination feel) ──
 const CATALOG: Product[] = [
@@ -31,16 +32,18 @@ export default function ProductsPage() {
   const [page, setPage] = useState(1);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [addedId, setAddedId] = useState<number | null>(null);
+  const { addToCart } = useCart();
 
   const toggleCategory = (cat: string) =>
     setActiveCategories((prev) =>
       prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
     );
 
-  const handleQuickAdd = (id: number, e: React.MouseEvent) => {
+  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setAddedId(id);
+    addToCart(product, product.sizes[0], product.colors[0].label, 1);
+    setAddedId(product.id);
     setTimeout(() => setAddedId(null), 1500);
   };
 
@@ -226,14 +229,14 @@ export default function ProductsPage() {
         {/* ── Product Grid Section ── */}
         <section className="flex-1">
           {/* Header row */}
-          <div className="flex justify-between items-end mb-gutter">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-gutter gap-4">
             <div>
-              <h1 className="font-headline-lg text-headline-lg text-primary">Shop All</h1>
+              <h1 className="font-headline-lg text-[32px] md:text-headline-lg text-primary">Shop All</h1>
               <p className="font-label-caps text-[11px] text-secondary mt-1 tracking-widest">
                 SHOWING {paginated.length} OF {filtered.length} ITEMS
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
               {/* Mobile filter toggle */}
               <button
                 className="md:hidden flex items-center gap-2 border border-outline-variant px-4 py-2 font-label-caps text-label-caps hover:border-primary transition-colors"
@@ -285,7 +288,7 @@ export default function ProductsPage() {
                   {/* Quick Add Overlay */}
                   <div className="add-to-bag-btn absolute bottom-0 left-0 right-0 p-4 opacity-0 translate-y-4 transition-all duration-300">
                     <button
-                      onClick={(e) => handleQuickAdd(product.id, e)}
+                      onClick={(e) => handleQuickAdd(product, e)}
                       className={`w-full py-3 font-button-text text-button-text uppercase tracking-widest transition-all ${
                         addedId === product.id
                           ? 'bg-secondary text-white'
