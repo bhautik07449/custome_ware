@@ -1,32 +1,54 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useCart } from '../context/CartContext';
 import { products, type Product } from '../data/products';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const newArrivals = products.slice(0, 4);
 
+// Mock data for the new sections
+const trendingCategories = [
+  { name: 'Outerwear', image: '/product_wool_coat.png', colSpan: 'col-span-2', rowSpan: 'row-span-2' },
+  { name: 'Heavyweight Hoodies', image: '/product_embroidered_hoodie.png', colSpan: 'col-span-1', rowSpan: 'row-span-1' },
+  { name: 'Structural Bottoms', image: '/product_trousers.png', colSpan: 'col-span-1', rowSpan: 'row-span-1' },
+];
+
+const editorialImages = [
+  '/hero_architecture.png',
+  '/product_wool_coat.png',
+  '/brand_philosophy.png',
+];
+
 const sustainabilityItems = [
-  {
-    icon: 'eco',
-    title: 'Ethical Sourcing',
-    desc: 'We partner only with certified manufacturers who prioritize worker welfare and environmental stewardship. 100% traceability for all raw materials.',
-  },
-  {
-    icon: 'recycling',
-    title: 'Circular Lifecycle',
-    desc: 'Our garments are engineered for longevity. We offer a lifetime repair program and a recycling initiative for end-of-life pieces.',
-  },
-  {
-    icon: 'package_2',
-    title: 'Zero Waste',
-    desc: 'Packaging that leaves no trace. We use FSC-certified recycled card and 100% compostable shipping bags for every order.',
-  },
+  { icon: 'eco', title: 'Ethical Sourcing', desc: 'We partner only with certified manufacturers who prioritize worker welfare and environmental stewardship. 100% traceability for all raw materials.' },
+  { icon: 'recycling', title: 'Circular Lifecycle', desc: 'Our garments are engineered for longevity. We offer a lifetime repair program and a recycling initiative for end-of-life pieces.' },
+  { icon: 'package_2', title: 'Zero Waste', desc: 'Packaging that leaves no trace. We use FSC-certified recycled card and 100% compostable shipping bags for every order.' },
 ];
 
 export default function HomePage() {
   const { addToCart } = useCart();
   const [addedId, setAddedId] = useState<number | null>(null);
+  
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const heroImages = [
+    '/hero_architecture.png',
+    '/product_wool_coat.png',
+    '/brand_philosophy.png'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const mainRef = useRef<HTMLElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
     e.preventDefault();
@@ -37,232 +59,220 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    // Intersection Observer for scroll-reveal
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove('opacity-0', 'translate-y-10');
-            entry.target.classList.add('opacity-100', 'translate-y-0');
+    const ctx = gsap.context(() => {
+      // Hero Entrance Animation
+      const heroTl = gsap.timeline();
+      heroTl.from('.hero-badge', { y: 20, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.2 })
+            .from('.hero-title-line', { y: 100, opacity: 0, duration: 1.2, stagger: 0.1, ease: 'power4.out' }, '-=0.8')
+            .from('.hero-btn', { y: 20, opacity: 0, duration: 1, ease: 'power3.out' }, '-=0.6');
+
+      // Scroll reveals for all sections
+      gsap.utils.toArray('.gsap-reveal').forEach((section: any) => {
+        gsap.from(section, {
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
           }
         });
-      },
-      { threshold: 0.1 }
-    );
+      });
 
-    const sections = document.querySelectorAll('.reveal-section');
-    sections.forEach((el) => {
-      el.classList.add('opacity-0', 'translate-y-10');
-      observer.observe(el);
-    });
-
-    // Immediately reveal hero
-    const hero = document.querySelector('.hero-section');
-    if (hero) {
-      hero.classList.remove('opacity-0', 'translate-y-10');
-      hero.classList.add('opacity-100', 'translate-y-0');
-    }
-
-    // Nav shadow on scroll
-    const handleScroll = () => {
-      const header = document.getElementById('top-nav');
-      if (header) {
-        if (window.scrollY > 50) {
-          header.classList.add('shadow-sm');
-        } else {
-          header.classList.remove('shadow-sm');
+      // Parallax Editorial Section
+      gsap.to('.parallax-img', {
+        yPercent: 20,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.editorial-section',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true
         }
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+      });
 
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', handleScroll);
-    };
+      // Nav shadow logic
+      const handleScroll = () => {
+        const header = document.getElementById('top-nav');
+        if (header) {
+          if (window.scrollY > 50) header.classList.add('shadow-md', 'bg-surface/95');
+          else header.classList.remove('shadow-md', 'bg-surface/95');
+        }
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, mainRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
-    <main>
+    <main ref={mainRef} className="bg-background text-on-background">
       <Helmet>
         <title>KORZAE | Architecture of Silence - Premium Streetwear</title>
         <meta name="description" content="KORZAE is an architectural streetwear brand building garments with purpose, precision, and an unwavering commitment to form." />
       </Helmet>
 
       {/* ── Hero Section ── */}
-      <section className="hero-section reveal-section relative h-[90vh] w-full overflow-hidden flex items-center justify-center transition-all duration-[1000ms] ease-out">
-        {/* Background */}
-        <div className="hero-zoom absolute inset-0 z-0">
-          <div
-            className="w-full h-full bg-cover bg-center transition-transform duration-[2000ms] ease-out"
-            style={{
-              backgroundImage: `url('/hero_architecture.png')`,
-            }}
-          />
-          <div className="absolute inset-0 bg-black/10" />
+      <section ref={heroRef} className="relative h-[100vh] w-full overflow-hidden flex items-center justify-center pt-20">
+        <div className="absolute inset-0 z-0 bg-black">
+          {heroImages.map((img, idx) => (
+            <div 
+              key={idx}
+              className={`absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-[2000ms] ease-in-out ${idx === currentSlide ? 'opacity-100 scale-105 z-10' : 'opacity-0 scale-100 z-0'}`}
+              style={{ backgroundImage: `url('${img}')` }} 
+            />
+          ))}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background z-20 pointer-events-none" />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 text-center px-container-margin">
-          <span className="font-label-caps text-label-caps text-on-primary mb-4 block tracking-[0.4em] opacity-80">
-            COLLECTION 01
-          </span>
-          <h1 className="font-display-lg text-[40px] md:text-[64px] lg:text-[100px] leading-tight md:leading-none text-on-primary tracking-tighter mb-8">
-            The Architecture
-            <br className="hidden md:block" />
-            <span className="md:hidden"> </span>of Silence
+        <div className="relative z-10 text-center px-container-margin w-full max-w-[1440px] flex flex-col items-center">
+          <div className="overflow-hidden mb-6">
+            <span className="hero-badge font-label-caps text-[12px] text-tertiary block tracking-[0.4em] uppercase border border-tertiary/30 px-4 py-1.5 backdrop-blur-sm">
+              COLLECTION 01
+            </span>
+          </div>
+          <h1 className="font-display-lg text-[12vw] md:text-[8vw] leading-[0.9] text-on-primary tracking-tighter mb-12 uppercase flex flex-col items-center">
+            <div className="overflow-hidden"><span className="hero-title-line block">The Architecture</span></div>
+            <div className="overflow-hidden"><span className="hero-title-line block text-outline">of Silence</span></div>
           </h1>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <Link
-              to="/shop"
-              className="bg-on-primary text-primary px-10 py-4 font-button-text text-button-text uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all duration-500"
-            >
+          <div className="hero-btn overflow-hidden">
+            <Link to="/shop" className="bg-primary text-on-primary px-12 py-5 font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary hover:text-black transition-all duration-500">
               Explore Collection
             </Link>
           </div>
         </div>
 
-        {/* Bounce arrow */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
-          <span className="material-symbols-outlined text-on-primary">expand_more</span>
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-50 z-10">
+          <span className="material-symbols-outlined text-primary">expand_more</span>
         </div>
       </section>
 
-      {/* ── New Arrivals Grid ── */}
-      <section className="reveal-section max-w-[1440px] mx-auto px-container-margin py-section-gap transition-all duration-[1000ms] ease-out">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6 md:gap-4">
-          <div>
-            <h2 className="font-headline-lg text-[32px] md:text-[40px] mb-2">New Arrivals</h2>
-            <p className="font-body-md text-body-md text-secondary max-w-md">
-              Precision engineered essentials designed for the modern landscape.
-            </p>
-          </div>
-          <Link
-            to="/shop"
-            className="font-label-caps text-label-caps border-b border-outline pb-1 hover:border-primary transition-colors whitespace-nowrap self-start md:self-auto"
-          >
-            View All Arrivals
+      {/* ── [NEW] Trending Categories Bento Box ── */}
+      <section className="gsap-reveal max-w-[1440px] mx-auto px-container-margin py-section-gap">
+        <div className="flex justify-between items-end mb-12">
+          <h2 className="font-headline-lg text-[32px] md:text-headline-lg uppercase tracking-tight">Structured Essentials</h2>
+          <Link to="/shop" className="font-label-caps text-label-caps border-b border-outline pb-1 hover:border-primary hover:text-primary transition-colors">
+            SHOP ALL CATEGORIES
           </Link>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-          {newArrivals.map((product) => (
-            <Link key={product.id} to={`/products/${product.slug}`} className="group cursor-pointer flex flex-col">
-              <div className="relative aspect-[4/5] overflow-hidden bg-surface-container mb-4">
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10"
-                />
-                {product.images[1] && (
-                  <img
-                    src={product.images[1]}
-                    alt={`${product.name} Alternate`}
-                    className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0"
-                  />
-                )}
-                
-                <button 
-                  onClick={(e) => handleQuickAdd(product, e)}
-                  className="absolute bottom-4 right-4 bg-white/90 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 active:scale-90 z-20 shadow-sm flex items-center justify-center rounded-full"
-                >
-                  <span className="material-symbols-outlined text-[20px] text-primary">
-                    {addedId === product.id ? 'check' : 'add'}
-                  </span>
-                </button>
-              </div>
-              
-              <div className="flex justify-between items-start mt-2">
-                <div>
-                  <h3 className="font-body-md text-[16px] font-bold text-primary">{product.name}</h3>
-                  <p className="font-label-caps text-[13px] text-secondary opacity-80 uppercase mt-1">
-                    {product.colors[0].label}
-                  </p>
-                </div>
-                <span className="font-body-md text-[16px] font-bold text-primary">${product.price.toFixed(2)}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-auto md:h-[600px]">
+          {trendingCategories.map((cat, idx) => (
+            <Link key={idx} to="/shop" className={`group relative overflow-hidden bg-surface-container ${cat.colSpan} ${cat.rowSpan}`}>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-500 z-10" />
+              <img src={cat.image} alt={cat.name} className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+              <div className="absolute bottom-8 left-8 z-20">
+                <h3 className="font-display-lg text-[24px] text-white uppercase tracking-tight group-hover:text-tertiary transition-colors">{cat.name}</h3>
+                <div className="w-0 h-[2px] bg-tertiary mt-2 group-hover:w-full transition-all duration-500 ease-out" />
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* ── Brand Philosophy ── */}
-      <section className="reveal-section bg-primary py-section-gap overflow-hidden transition-all duration-[1000ms] ease-out">
-        <div className="max-w-[1440px] mx-auto px-container-margin">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
-            {/* Text — left on desktop, bottom on mobile */}
-            <div className="md:col-span-5 order-2 md:order-1 mt-12 md:mt-0 text-center md:text-left">
-              <h2 className="font-display-lg text-[32px] md:text-[48px] lg:text-[64px] text-on-primary leading-tight mb-8">
-                Minimalism is not a lack of something, but the perfect amount of it.
-              </h2>
-              <p className="font-body-md text-body-md text-on-primary/60 max-w-md mb-12">
-                KORZAE is a study in restrained luxury. We strip away the unnecessary to reveal the architecture
-                of modern clothing. Every stitch, every seam, and every fabric choice is an intentional act of
-                design.
-              </p>
-              <button className="border border-on-primary text-on-primary px-8 py-3 font-button-text text-button-text uppercase hover:bg-on-primary hover:text-primary transition-all duration-300">
-                Our Story
-              </button>
-            </div>
-
-            {/* Image — right on desktop, top on mobile */}
-            <div className="md:col-span-7 order-1 md:order-2">
-              <div className="relative aspect-video">
-                <img
-                  src="/brand_philosophy.png"
-                  alt="Craftsman at work"
-                  className="w-full h-full object-cover"
-                />
-                {/* Floating label — desktop only */}
-                <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-white/5 backdrop-blur-xl border border-white/10 hidden md:flex items-center justify-center p-8">
-                  <p className="font-label-caps text-[10px] text-on-primary leading-relaxed">
-                    DESIGNED IN LONDON. MANUFACTURED WITH INTEGRITY.
-                  </p>
-                </div>
-              </div>
-            </div>
+      {/* ── New Arrivals Grid ── */}
+      <section className="gsap-reveal max-w-[1440px] mx-auto px-container-margin py-section-gap">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6 md:gap-4">
+          <div>
+            <h2 className="font-headline-lg text-[32px] md:text-headline-lg uppercase tracking-tight mb-2">New Arrivals</h2>
+            <p className="font-body-md text-secondary max-w-md">Precision engineered elements designed for the modern landscape.</p>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+          {newArrivals.map((product) => (
+            <div key={product.id} className="group flex flex-col product-card-hover luxury-shadow p-2 bg-surface">
+              <Link to={`/products/${product.slug}`} className="relative aspect-[4/5] overflow-hidden bg-surface-container mb-4 block">
+                <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0 absolute inset-0 z-10" />
+                {product.images[1] && <img src={product.images[1]} alt="Alternate" className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105 absolute inset-0 z-0" />}
+                
+                <button onClick={(e) => handleQuickAdd(product, e)} className="absolute bottom-4 right-4 bg-primary/90 text-on-primary p-3 opacity-0 group-hover:opacity-100 transition-all duration-300 active:scale-90 z-20 shadow-lg rounded-full flex items-center justify-center hover:bg-tertiary hover:text-black">
+                  <span className="material-symbols-outlined text-[20px]">{addedId === product.id ? 'check' : 'add'}</span>
+                </button>
+              </Link>
+              <Link to={`/products/${product.slug}`} className="flex justify-between items-start px-2 pb-2">
+                <div>
+                  <h3 className="font-label-caps text-[12px] font-bold text-primary truncate w-[160px]">{product.name}</h3>
+                  <p className="font-label-caps text-[10px] text-secondary opacity-80 uppercase mt-1">{product.colors[0].label}</p>
+                </div>
+                <span className="font-label-caps text-[12px] font-bold text-primary">${product.price.toFixed(2)}</span>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── [NEW] Editorial / Lookbook Parallax ── */}
+      <section className="editorial-section relative h-[80vh] w-full overflow-hidden flex items-center justify-center my-section-gap">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <img src="/brand_philosophy.png" alt="Editorial" className="parallax-img w-full h-[140%] object-cover absolute top-[-20%]" />
+          <div className="absolute inset-0 bg-black/70" />
+        </div>
+        <div className="relative z-10 text-center px-container-margin max-w-3xl">
+          <span className="material-symbols-outlined text-[48px] text-tertiary mb-6 block">architecture</span>
+          <h2 className="font-display-lg text-[40px] md:text-[64px] text-white leading-none mb-8 uppercase tracking-tighter">
+            Minimalism is not a lack of something, but the perfect amount of it.
+          </h2>
+          <p className="font-body-md text-white/70 max-w-xl mx-auto mb-10">
+            KORZAE is a study in restrained luxury. We strip away the unnecessary to reveal the architecture of modern clothing. Every stitch, every seam, and every fabric choice is an intentional act of design.
+          </p>
+          <button className="border border-white text-white px-10 py-4 font-button-text text-[14px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300">
+            Read Our Manifesto
+          </button>
         </div>
       </section>
 
       {/* ── Sustainability & Ethics ── */}
-      <section className="reveal-section py-section-gap max-w-[1440px] mx-auto px-container-margin transition-all duration-[1000ms] ease-out">
+      <section className="gsap-reveal py-section-gap max-w-[1440px] mx-auto px-container-margin">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           {sustainabilityItems.map((item) => (
-            <div key={item.title}>
-              <span className="material-symbols-outlined text-[40px] mb-6 block">{item.icon}</span>
-              <h3 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-4">{item.title}</h3>
-              <p className="font-body-md text-body-md text-secondary">{item.desc}</p>
+            <div key={item.title} className="flex flex-col items-start p-8 bg-surface-container-low hover:bg-surface-container transition-colors duration-500 border border-outline-variant">
+              <span className="material-symbols-outlined text-[40px] mb-6 text-tertiary">{item.icon}</span>
+              <h3 className="font-headline-lg text-[24px] uppercase tracking-tight mb-4">{item.title}</h3>
+              <p className="font-body-md text-secondary">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── [NEW] Community / Gallery Marquee ── */}
+      <section className="gsap-reveal py-section-gap overflow-hidden border-t border-outline-variant">
+        <div className="px-container-margin max-w-[1440px] mx-auto mb-12 text-center">
+          <h2 className="font-headline-lg text-[32px] uppercase tracking-tight mb-4">The Architecture in Motion</h2>
+          <p className="font-body-md text-secondary">Tag @korzae to be featured in our seasonal archives.</p>
+        </div>
+        <div className="flex gap-4 px-4 overflow-x-auto no-scrollbar pb-8">
+          {[...editorialImages, ...editorialImages].map((img, i) => (
+            <div key={i} className="w-[280px] md:w-[400px] aspect-[4/5] shrink-0 overflow-hidden group cursor-pointer">
+              <img src={img} alt="Community" className="w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" />
             </div>
           ))}
         </div>
       </section>
 
       {/* ── Newsletter Signup ── */}
-      <section className="reveal-section bg-surface-container-low py-section-gap transition-all duration-[1000ms] ease-out">
+      <section className="gsap-reveal bg-surface-container py-[120px] border-t border-outline-variant">
         <div className="max-w-[800px] mx-auto px-container-margin text-center">
-          <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-6">Join the Registry</h2>
-          <p className="font-body-md text-body-md text-secondary mb-10">
+          <h2 className="font-headline-lg text-[40px] uppercase tracking-tighter mb-6">Join the Registry</h2>
+          <p className="font-body-md text-secondary mb-10">
             Access early releases, exclusive capsule drops, and architectural insights. No noise, just essentials.
           </p>
-          <form
-            className="flex flex-col md:flex-row gap-4"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="flex flex-col md:flex-row gap-0 shadow-2xl" onSubmit={(e) => e.preventDefault()}>
             <input
               type="email"
               placeholder="YOUR@EMAIL.COM"
-              className="flex-1 bg-surface border-0 border-b border-outline-variant focus:border-primary focus:ring-0 font-label-caps text-label-caps p-4 transition-colors outline-none"
+              className="flex-1 bg-surface border border-outline-variant focus:border-tertiary focus:ring-1 focus:ring-tertiary font-label-caps text-label-caps p-5 transition-all outline-none"
             />
             <button
               type="submit"
-              className="bg-primary text-on-primary font-button-text text-button-text px-12 py-4 uppercase tracking-widest hover:opacity-90 transition-opacity"
+              className="bg-primary text-on-primary font-button-text px-12 py-5 uppercase tracking-widest hover:bg-tertiary hover:text-black transition-colors"
             >
               Subscribe
             </button>
           </form>
-          <p className="font-label-caps text-[10px] text-secondary mt-6 uppercase">
-            By subscribing you agree to our privacy policy.
+          <p className="font-label-caps text-[10px] text-secondary mt-8 uppercase tracking-widest opacity-50">
+            By subscribing you agree to our privacy architecture.
           </p>
         </div>
       </section>

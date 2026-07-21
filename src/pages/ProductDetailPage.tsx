@@ -15,6 +15,7 @@ export default function ProductDetailPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [wishlist, setWishlist] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'care'>('details');
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const { addToCart } = useCart();
 
   if (!product) {
@@ -60,6 +61,52 @@ export default function ProductDetailPage() {
           <span className="text-primary">{product.name.toUpperCase()}</span>
         </nav>
       </div>
+
+      {/* ── Size Guide Modal ── */}
+      {showSizeGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-container-margin">
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer"
+            onClick={() => setShowSizeGuide(false)}
+          />
+          <div className="relative bg-surface p-8 lg:p-12 shadow-2xl w-full max-w-3xl overflow-y-auto max-h-[90vh]">
+            <button 
+              onClick={() => setShowSizeGuide(false)}
+              className="absolute top-6 right-6 text-secondary hover:text-primary transition-colors"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            
+            <h2 className="font-headline-lg text-primary mb-2">Size Guide</h2>
+            <p className="font-body-md text-secondary mb-8">All measurements are in inches. Garments are measured lying flat.</p>
+            
+            <div className="overflow-x-auto border border-outline-variant">
+              <table className="w-full text-left font-body-md">
+                <thead className="bg-surface-container-low border-b border-outline-variant">
+                  <tr>
+                    <th className="p-4 font-label-caps tracking-widest text-primary">SIZE</th>
+                    <th className="p-4 font-label-caps tracking-widest text-primary">CHEST</th>
+                    <th className="p-4 font-label-caps tracking-widest text-primary">LENGTH</th>
+                    <th className="p-4 font-label-caps tracking-widest text-primary">SLEEVE</th>
+                    <th className="p-4 font-label-caps tracking-widest text-primary">SHOULDER</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant">
+                  {['S', 'M', 'L', 'XL', 'XXL'].map((sz) => (
+                    <tr key={sz} className="hover:bg-surface-container-lowest transition-colors">
+                      <td className="p-4 font-bold text-primary">{sz}</td>
+                      <td className="p-4 text-secondary">{sz === 'S' ? '21.5' : sz === 'M' ? '22.5' : sz === 'L' ? '23.5' : sz === 'XL' ? '24.5' : '25.5'}</td>
+                      <td className="p-4 text-secondary">{sz === 'S' ? '26.0' : sz === 'M' ? '27.0' : sz === 'L' ? '28.0' : sz === 'XL' ? '29.0' : '30.0'}</td>
+                      <td className="p-4 text-secondary">{sz === 'S' ? '24.5' : sz === 'M' ? '25.0' : sz === 'L' ? '25.5' : sz === 'XL' ? '26.0' : '26.5'}</td>
+                      <td className="p-4 text-secondary">{sz === 'S' ? '18.0' : sz === 'M' ? '19.0' : sz === 'L' ? '20.0' : sz === 'XL' ? '21.0' : '22.0'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Main Product Section ── */}
       <section className="max-w-[1440px] mx-auto px-container-margin py-8">
@@ -161,7 +208,10 @@ export default function ProductDetailPage() {
                 <p className="font-label-caps text-[14px] text-secondary tracking-widest">
                   SIZE{selectedSize ? `: ` : ''}<span className="text-primary font-bold">{selectedSize || ''}</span>
                 </p>
-                <button className="font-label-caps text-[12px] text-secondary underline hover:text-primary transition-colors">
+                <button 
+                  onClick={() => setShowSizeGuide(true)}
+                  className="font-label-caps text-[12px] text-secondary underline hover:text-primary transition-colors"
+                >
                   SIZE GUIDE
                 </button>
               </div>

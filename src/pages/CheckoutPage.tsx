@@ -131,10 +131,35 @@ export default function CheckoutPage() {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 mt-2">
-                  <input required placeholder="Card Number" className="col-span-2 korzae-input" />
-                  <input required placeholder="Name on Card" className="col-span-2 korzae-input" />
-                  <input required placeholder="MM/YY" className="col-span-1 korzae-input" />
-                  <input required placeholder="CVC" className="col-span-1 korzae-input" />
+                  <input 
+                    required 
+                    placeholder="Card Number (16 digits)" 
+                    className="col-span-2 korzae-input" 
+                    pattern="[\d\s]{16,19}"
+                    title="Please enter a valid 16-digit card number"
+                    maxLength={19}
+                  />
+                  <input 
+                    required 
+                    placeholder="Name on Card" 
+                    className="col-span-2 korzae-input" 
+                  />
+                  <input 
+                    required 
+                    placeholder="MM/YY" 
+                    className="col-span-1 korzae-input" 
+                    pattern="(0[1-9]|1[0-2])\/\d{2}"
+                    title="Please enter a valid expiration date in MM/YY format"
+                    maxLength={5}
+                  />
+                  <input 
+                    required 
+                    placeholder="CVC" 
+                    className="col-span-1 korzae-input" 
+                    pattern="\d{3,4}"
+                    title="Please enter a 3 or 4 digit CVC code"
+                    maxLength={4}
+                  />
                 </div>
               </div>
 
