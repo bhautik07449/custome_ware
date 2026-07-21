@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { products as allProducts, type Product } from '../data/products';
@@ -32,7 +32,15 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState('Featured');
   const [page, setPage] = useState(1);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const location = useLocation();
+  const observerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -52,7 +60,24 @@ export default function ProductsPage() {
   }, [sortBy]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const paginated = isMobile
+    ? filtered.slice(0, page * PAGE_SIZE)
+    : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((prev) => (prev < totalPages ? prev + 1 : prev));
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [isMobile, totalPages]);
 
   const SidebarContent = () => (
     <div>
@@ -263,8 +288,11 @@ export default function ProductsPage() {
             })}
           </div>
 
-          {/* ── Pagination ── */}
-          <div className="mt-section-gap flex justify-center items-center gap-8 border-t border-outline-variant pt-section-gap">
+          {/* ── Infinite Scroll Sentinel ── */}
+          <div ref={observerRef} className="h-10 w-full" />
+
+          {/* ── Pagination (Desktop Only) ── */}
+          <div className="mt-section-gap hidden md:flex justify-center items-center gap-8 border-t border-outline-variant pt-section-gap">
             <button
               onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               disabled={page === 1}

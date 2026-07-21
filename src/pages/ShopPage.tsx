@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { products } from '../data/products';
+import { products as allProducts, type Product } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import CustomSelect from '../components/CustomSelect';
 
@@ -12,6 +12,14 @@ const colorOptions = [
   { label: 'SAND', value: '#f5f5dc', ring: false },
 ];
 
+const CATALOG: Product[] = [
+  ...allProducts,
+  ...allProducts.map((p) => ({ ...p, id: p.id + 100, slug: p.slug + '-v2', isNew: false })),
+  ...allProducts.map((p) => ({ ...p, id: p.id + 200, slug: p.slug + '-v3', isNew: false })),
+].slice(0, 48);
+
+const PAGE_SIZE = 8;
+
 export default function ShopPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('OUTERWEAR');
@@ -19,7 +27,16 @@ export default function ShopPage() {
   const [selectedColor, setSelectedColor] = useState<string | null>('#D4AF37');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('RELEVANCE');
+  const [page, setPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Lock body scroll when filter sheet is open
   useEffect(() => {
@@ -31,9 +48,29 @@ export default function ShopPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const filtered = products.filter((p) =>
+  const filtered = CATALOG.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+
+  const paginated = isMobile
+    ? filtered.slice(0, page * PAGE_SIZE)
+    : filtered.slice(0, page * PAGE_SIZE); // For ShopPage, desktop uses LOAD MORE button which adds to current list
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((prev) => (prev < totalPages ? prev + 1 : prev));
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [isMobile, totalPages]);
 
   return (
     <>
@@ -102,23 +139,36 @@ export default function ShopPage() {
 
         {/* ── Product Grid ── */}
         <section className="px-container-margin grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-gutter max-w-[1440px] mx-auto">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {paginated.map((product) => {
+            const baseProduct = allProducts.find(p => p.id === product.id % 100 || p.id === product.id) || product;
+            const mappedProduct = {
+              ...product,
+              slug: baseProduct.slug || product.slug.replace(/-v[23]$/, '')
+            };
+            return <ProductCard key={product.id} product={mappedProduct} />;
+          })}
         </section>
 
-        {/* ── Load More ── */}
-        <section className="mt-section-gap px-container-margin flex flex-col items-center gap-4 max-w-[1440px] mx-auto pb-section-gap">
-          <button className="w-full max-w-xs bg-primary text-on-primary font-button-text text-button-text py-4 tracking-widest active:scale-95 transition-transform hover:bg-tertiary transition-colors">
-            LOAD MORE
-          </button>
-          <p className="font-label-caps text-[10px] text-secondary tracking-widest uppercase">
-            Showing {filtered.length} of 48 items
-          </p>
-          <div className="w-full max-w-[200px] h-[1px] bg-outline-variant relative">
-            <div className="absolute top-0 left-0 h-full bg-primary" style={{ width: `${(filtered.length / 48) * 100}%` }} />
-          </div>
-        </section>
+        {/* ── Infinite Scroll Sentinel ── */}
+        <div ref={observerRef} className="h-10 w-full md:hidden" />
+
+        {/* ── Load More (Hidden on mobile) ── */}
+        {page < totalPages && (
+          <section className="mt-section-gap px-container-margin hidden md:flex flex-col items-center gap-4 max-w-[1440px] mx-auto pb-section-gap">
+            <button
+              onClick={() => setPage(p => p + 1)}
+              className="w-full max-w-xs bg-primary text-on-primary font-button-text text-button-text py-4 tracking-widest active:scale-95 transition-transform hover:bg-tertiary transition-colors"
+            >
+              LOAD MORE
+            </button>
+            <p className="font-label-caps text-[10px] text-secondary tracking-widest uppercase">
+              Showing {paginated.length} of {filtered.length} items
+            </p>
+            <div className="w-full max-w-[200px] h-[1px] bg-outline-variant relative">
+              <div className="absolute top-0 left-0 h-full bg-primary" style={{ width: `${(paginated.length / filtered.length) * 100}%` }} />
+            </div>
+          </section>
+        )}
       </main>
 
       {/* ── Filter Overlay ── */}
